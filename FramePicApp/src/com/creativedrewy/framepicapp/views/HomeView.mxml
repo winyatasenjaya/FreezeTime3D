@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<views:HomeViewController xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:views="com.creativedrewy.framepicapp.views.*"
+		actionBarVisible="false"
+		initialize="init(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			protected function init(event:FlexEvent):void
+			{
+				//private var mySocket:Socket;
+				//var mySocket:Socket = new Socket("192.168.10.103", 7474);
+				//mySocket = new Socket("localhost", 7474);
+				//mySocket.addEventListener(Event.CONNECT, onSocketConnect);
+				//mySocket.addEventListener(Event.CLOSE, onSocketClose);
+				//mySocket.addEventListener(ProgressEvent.SOCKET_DATA, onSocketData);
+				//addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+				//addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+			}
+			
+			protected function onSystemMasterClick(event:MouseEvent):void
+			{
+				navigator.pushView(com.creativedrewy.framepicapp.views.SystemMasterView);
+			}
+			
+			protected function onPicTakerClick(event:MouseEvent):void
+			{
+				navigator.pushView(com.creativedrewy.framepicapp.views.PicTakerView);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup horizontalAlign="center" verticalAlign="middle" height="100%" width="100%">
+		<s:Button label="Start Master" width="70%" skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" click="onSystemMasterClick(event)" />
+		<s:Button label="Start Photographer" width="70%" skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" click="onPicTakerClick(event)" />
+	</s:VGroup>
+</views:HomeViewController>
