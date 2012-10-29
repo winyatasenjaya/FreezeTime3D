@@ -1,5 +1,7 @@
 package com.creativedrewy.framepicapp.views
 {
+	import com.creativedrewy.framepicapp.model.PicTakerModel;
+	
 	import flash.events.MouseEvent;
 	import flash.media.Camera;
 	import flash.media.Video;
@@ -20,6 +22,8 @@ package com.creativedrewy.framepicapp.views
 		[Bindable] public var step3ReadyButton:Button;
 		[Bindable] public var cameraViewport:UIComponent;
 		
+		private var _picTakerModel:PicTakerModel;
+		
 		/**
 		 * Constructor 
 		 */		
@@ -30,7 +34,7 @@ package com.creativedrewy.framepicapp.views
 		
 		protected function onStep1ButtonClick(event:MouseEvent):void
 		{
-			
+			_picTakerModel = new PicTakerModel();
 		}
 		
 		protected function onStep3ButtonClick(event:MouseEvent):void

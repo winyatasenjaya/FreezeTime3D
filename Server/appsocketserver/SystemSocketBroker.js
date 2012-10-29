@@ -10,7 +10,7 @@ module.exports.SystemSocketBroker = new Class({
 
     initialize: function() {
         var msgContents = require("fs").readFileSync(this.messagesJSONPath, "utf8");
-        this.socketMessages = JSON.encode(msgContents);
+        this.socketMessages = JSON.decode(msgContents);
     },
 
     /**

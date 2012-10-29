@@ -9,16 +9,15 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			protected function init(event:FlexEvent):void
+			[Embed(source="assets/socketMessages.json", mimeType="application/octet-stream")]
+			public var SocketMessages:Class;
+			
+			protected function init(event:FlexEvent):void 
 			{
-				//private var mySocket:Socket;
-				//var mySocket:Socket = new Socket("192.168.10.103", 7474);
-				//mySocket = new Socket("localhost", 7474);
-				//mySocket.addEventListener(Event.CONNECT, onSocketConnect);
-				//mySocket.addEventListener(Event.CLOSE, onSocketClose);
-				//mySocket.addEventListener(ProgressEvent.SOCKET_DATA, onSocketData);
-				//addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-				//addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+				var msgsSrc:Object = new SocketMessages();
+				//var msgsJSONSrc:String = 
+				
+				//var messages:Object = JSON.parse(msgsJSONSrc);
 			}
 			
 			protected function onSystemMasterClick(event:MouseEvent):void

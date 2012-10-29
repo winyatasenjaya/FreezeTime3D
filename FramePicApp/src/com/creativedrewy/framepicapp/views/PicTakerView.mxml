@@ -16,10 +16,10 @@
 						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
 			</s:VGroup>
 		</components:SetupUIRegionBox>
-		<components:SetupUIRegionBox width="100%" height="33%">
+		<components:SetupUIRegionBox width="100%" height="33%" enabled="false">
 			
 		</components:SetupUIRegionBox>
-		<components:SetupUIRegionBox width="100%" height="33%">
+		<components:SetupUIRegionBox width="100%" height="33%" enabled="false">
 			<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
 				<s:Button id="step3ReadyButton" label="Ready" click="onStep3ButtonClick(event)" width="50%"
 						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />

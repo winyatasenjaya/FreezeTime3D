@@ -64,7 +64,7 @@ module.exports.MobileAppsSocketController = new Class({
             socket.write(this.policyContents + "\0");
         } else {
             var sentJSON = JSON.decode(data);
-            this.socketBroker.processSystemMessages(data, socket);
+            this.socketBroker.processSystemMessages(sentJSON, socket);
         }
 
         console.log("Socket data received: ", data);
