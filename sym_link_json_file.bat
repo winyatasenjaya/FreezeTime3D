@@ -1,0 +1,1 @@
+mklink .\FramePicApp\src\assets\socketMessages.json ..\..\..\Server\socketMessages.json
