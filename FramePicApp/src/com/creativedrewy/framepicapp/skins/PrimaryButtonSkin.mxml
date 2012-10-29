@@ -27,6 +27,9 @@
 		<s:stroke>
 			<s:SolidColorStroke id="outline" weight="1" />
 		</s:stroke>
+		<s:fill>
+			<s:SolidColor color="#FFFFFF" />
+		</s:fill>
 	</s:Rect>
 	
 	<s:Label id="labelDisplay" horizontalCenter="0" verticalCenter="1" />

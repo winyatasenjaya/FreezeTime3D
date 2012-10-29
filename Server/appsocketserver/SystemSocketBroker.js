@@ -5,6 +5,13 @@
 module.exports.SystemSocketBroker = new Class({
     masterSocket: null,
     picSockets: {},
+    messagesJSONPath: "./socketMessages.json",
+    socketMessages: {},
+
+    initialize: function() {
+        var msgContents = require("fs").readFileSync(this.messagesJSONPath, "utf8");
+        this.socketMessages = JSON.encode(msgContents);
+    },
 
     /**
      * Process all system messages from all connected apps
@@ -24,11 +31,11 @@ module.exports.SystemSocketBroker = new Class({
      */
     processMasterMessages: function(message, socket) {
         switch (message) {
-            case "register master":
+            case this.socketMessages.masterMessages.register:
                 break;
-            case "initiate taker order":
+            case this.socketMessages.masterMessages.initPicTakerOrder:
                 break;
-            case "start pic taking":
+            case this.socketMessages.masterMessages.startFrameCapture:
                 break;
         }
     },
@@ -38,13 +45,13 @@ module.exports.SystemSocketBroker = new Class({
      */
     processPicTakerMessages: function(message, socket) {
         switch (message) {
-            case "register pic taker":
+            case this.socketMessages.picTakerMessages.register:
                 break;
-            case "submit place in order":
+            case this.socketMessages.picTakerMessages.submitOrder:
                 break;
-            case "ready for pic taking":
+            case this.socketMessages.picTakerMessages.picTakingReady:
                 break;
-            case "image upload complete":
+            case this.socketMessages.picTakerMessages.imgUploadReady:
                 break;
         }
     }

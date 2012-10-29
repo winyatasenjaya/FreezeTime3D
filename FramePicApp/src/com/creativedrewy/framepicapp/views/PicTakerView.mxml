@@ -11,14 +11,19 @@
 	
 	<s:VGroup width="100%" height="100%" id="mainButtonsContainer">
 		<components:SetupUIRegionBox width="100%" height="33%">
-			
+			<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+				<s:Button id="step1RegisterButton" label="Register" click="onStep1ButtonClick(event)" width="50%"
+						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
+			</s:VGroup>
 		</components:SetupUIRegionBox>
 		<components:SetupUIRegionBox width="100%" height="33%">
 			
 		</components:SetupUIRegionBox>
 		<components:SetupUIRegionBox width="100%" height="33%">
-			<s:Button id="step3ReadyButton" label="Ready" click="onStep3ButtonClick(event)" 
-					  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
+			<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+				<s:Button id="step3ReadyButton" label="Ready" click="onStep3ButtonClick(event)" width="50%"
+						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
+			</s:VGroup>
 		</components:SetupUIRegionBox>
 	</s:VGroup>
 	
