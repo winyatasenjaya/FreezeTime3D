@@ -30,7 +30,7 @@ package com.creativedrewy.framepicapp.model
 		
 		protected function onSocketConnect(event:Event):void
 		{
-			_socketConnection.writeUTFBytes(JSON.stringify({ 
+			_socketConnection.writeUTFBytes(JSON.stringify({
 				role: GlobalVars.serverMessages.picTakerId,
 				message: GlobalVars.serverMessages.picTakerMessages.register
 			}));
