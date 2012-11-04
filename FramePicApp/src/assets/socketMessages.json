@@ -1,0 +1,13 @@
+{
+    "masterMessages": {
+        "register": "RegisterMaster",
+        "initPicTakerOrder": "InitPictureTakerOrder",
+        "startFrameCapture": "StartFrameCapture"
+    },
+    "picTakerMessages": {
+        "register": "RegisterPicTaker",
+        "submitOrder": "SubmitPicOrder",
+        "picTakingReady": "PicTakingReady",
+        "imgUploadReady": "ImageUploadReady"
+    }
+}

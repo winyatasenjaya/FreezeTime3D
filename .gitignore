@@ -165,4 +165,3 @@ pip-log.txt
 #FreezeTime3D Ignores
 .idea
 bin-debug
-FramePicApp/src/assets/socketMessages.json
