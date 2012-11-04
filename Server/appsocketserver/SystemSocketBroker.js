@@ -19,9 +19,9 @@ module.exports.SystemSocketBroker = new Class({
      * @param socket socket connection who is originating data
      */
     processSystemMessages: function(data, socket) {
-        if (data.role == "master") {
+        if (data.role == this.socketMessages.masterId) {
             this.processMasterMessages(data.message, socket);
-        } else if (data.role == "picTaker") {
+        } else if (data.role == this.socketMessages.picTakerId) {
             this.processPicTakerMessages(data.message, socket);
         }
     },
@@ -46,6 +46,9 @@ module.exports.SystemSocketBroker = new Class({
     processPicTakerMessages: function(message, socket) {
         switch (message) {
             case this.socketMessages.picTakerMessages.register:
+                this.picSockets[socket.remoteAddress] = socket;
+                socket.write(this.socketMessages.picTakerMessages.registerResponse);
+                console.log("Pic Taker has registered at address " + socket.remoteAddress + "");
                 break;
             case this.socketMessages.picTakerMessages.submitOrder:
                 break;

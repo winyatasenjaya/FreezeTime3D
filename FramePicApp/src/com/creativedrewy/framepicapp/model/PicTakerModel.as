@@ -1,17 +1,19 @@
 package com.creativedrewy.framepicapp.model
 {
 	import com.creativedrewy.framepicapp.constants.GlobalVars;
+	import com.creativedrewy.framepicapp.events.ServerEvent;
 	
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.ProgressEvent;
 	import flash.net.Socket;
 
 	/**
 	 * Model class to handle communication with the socket server for apps acting as pic takers
 	 */	
-	public class PicTakerModel
+	public class PicTakerModel extends EventDispatcher
 	{
-		private var _socketConnection:Socket;
+		protected var _socketConnection:Socket;
 		
 		/**
 		 * Constructor
@@ -28,12 +30,16 @@ package com.creativedrewy.framepicapp.model
 		
 		protected function onSocketConnect(event:Event):void
 		{
-			//_socketConnection.writeUTFBytes(JSON.stringify({ role: "picTaker", message: "RegisterPicTaker" }));
+			_socketConnection.writeUTFBytes(JSON.stringify({ 
+				role: GlobalVars.serverMessages.picTakerId,
+				message: GlobalVars.serverMessages.picTakerMessages.register
+			}));
 		}
 		
 		protected function onSocketData(event:ProgressEvent):void
 		{
-			
+			var responseMessage:String = _socketConnection.readUTFBytes(_socketConnection.bytesAvailable);
+			dispatchEvent(new ServerEvent(ServerEvent.MESSAGE_RECEIVED, responseMessage));
 		}
 		
 	}

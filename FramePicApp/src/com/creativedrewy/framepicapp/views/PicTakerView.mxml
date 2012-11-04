@@ -6,22 +6,24 @@
 		xmlns:views="com.creativedrewy.framepicapp.views.*"
 		actionBarVisible="false">
 	
-	<fx:Script>
-	</fx:Script>
+	<fx:Script></fx:Script>
 	
 	<s:VGroup width="100%" height="100%" id="mainButtonsContainer">
 		<components:SetupUIRegionBox width="100%" height="33%">
 			<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
-				<s:Button id="step1RegisterButton" label="Register" click="onStep1ButtonClick(event)" width="50%"
+				<s:Button id="step1RegisterButton" label="Register" click="onStep1ButtonClick(event)" width="75%"
 						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
 			</s:VGroup>
 		</components:SetupUIRegionBox>
 		<components:SetupUIRegionBox width="100%" height="33%" enabled="false">
-			
+			<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+				<s:Button id="step2OrderButton" label="Submit Pic Order" click="onStep2ButtonClick(event)" width="75%"
+						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
+			</s:VGroup>
 		</components:SetupUIRegionBox>
 		<components:SetupUIRegionBox width="100%" height="33%" enabled="false">
 			<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
-				<s:Button id="step3ReadyButton" label="Ready" click="onStep3ButtonClick(event)" width="50%"
+				<s:Button id="step3ReadyButton" label="Ready" click="onStep3ButtonClick(event)" width="75%"
 						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
 			</s:VGroup>
 		</components:SetupUIRegionBox>

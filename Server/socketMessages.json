@@ -1,4 +1,6 @@
 {
+    "masterId": "master",
+    "picTakerId": "picTaker",
     "masterMessages": {
         "register": "RegisterMaster",
         "initPicTakerOrder": "InitPictureTakerOrder",
@@ -6,6 +8,7 @@
     },
     "picTakerMessages": {
         "register": "RegisterPicTaker",
+        "registerResponse": "RegisterPicTakerResponse",
         "submitOrder": "SubmitPicOrder",
         "picTakingReady": "PicTakingReady",
         "imgUploadReady": "ImageUploadReady"

@@ -1,5 +1,7 @@
 package com.creativedrewy.framepicapp.views
 {
+	import com.creativedrewy.framepicapp.constants.GlobalVars;
+	import com.creativedrewy.framepicapp.events.ServerEvent;
 	import com.creativedrewy.framepicapp.model.PicTakerModel;
 	
 	import flash.events.MouseEvent;
@@ -19,6 +21,7 @@ package com.creativedrewy.framepicapp.views
 	{
 		[Bindable] public var mainButtonsContainer:VGroup;
 		[Bindable] public var step1RegisterButton:Button;
+		[Bindable] public var step2OrderButton:Button;
 		[Bindable] public var step3ReadyButton:Button;
 		[Bindable] public var cameraViewport:UIComponent;
 		
@@ -35,6 +38,12 @@ package com.creativedrewy.framepicapp.views
 		protected function onStep1ButtonClick(event:MouseEvent):void
 		{
 			_picTakerModel = new PicTakerModel();
+			_picTakerModel.addEventListener(ServerEvent.MESSAGE_RECEIVED, onServerMessageReceived, false, 0, true);
+		}
+		
+		protected function onStep2ButtonClick(event:MouseEvent):void
+		{
+			
 		}
 		
 		protected function onStep3ButtonClick(event:MouseEvent):void
@@ -49,6 +58,22 @@ package com.creativedrewy.framepicapp.views
 //			vidStream.attachCamera(camera);
 //			
 //			cameraViewport.visible = true;
+		}
+		
+		/**
+		 * Handle the server messages here, since they dictate what happens in the UI
+		 */		
+		protected function onServerMessageReceived(event:ServerEvent):void
+		{
+			switch (event.serverMessage) {
+				case GlobalVars.serverMessages.picTakerMessages.registerResponse: {
+					step1RegisterButton.label = "Registered!";
+					step1RegisterButton.enabled = false;
+					
+					step2OrderButton.label = "Waiting for master...";
+					break;
+				}
+			}
 		}
 		
 	}

@@ -45,7 +45,7 @@ module.exports.MobileAppsSocketController = new Class({
             this.policyContents = fileData;
             this.socketServer.listen(this.port, this.host);
 
-            console.log("::: Socket server has been started on port " + this.port + " :::");
+            console.log("Socket server has been started on port " + this.port + "");
         }.bind(this));
     },
 
@@ -53,7 +53,7 @@ module.exports.MobileAppsSocketController = new Class({
      * Initial connection from a mobile device
      */
     onSocketConnect: function(socket) {
-        console.log("::: Socket connection established with device at " + socket.remoteAddress + " :::");
+        console.log("Socket connection established with device at " + socket.remoteAddress + "");
     },
 
     /**
@@ -67,11 +67,11 @@ module.exports.MobileAppsSocketController = new Class({
             this.socketBroker.processSystemMessages(sentJSON, socket);
         }
 
-        console.log("Socket data received: ", data);
+        //console.log("Socket data received: ", data);
     },
 
     onSocketEnd: function(socket) {
-        console.log("::: Socket connection ended with a device :::");
+        console.log("Socket connection ended with a device");
 
         //TODO: Not seeing much in the way of unique IDs for socket at this point...don't know how to remove from global collection
     }
