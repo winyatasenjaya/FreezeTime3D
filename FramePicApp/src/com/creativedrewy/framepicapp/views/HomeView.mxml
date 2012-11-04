@@ -7,6 +7,9 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.creativedrewy.framepicapp.constants.GlobalVars;
+			
+			import mx.core.ByteArrayAsset;
 			import mx.events.FlexEvent;
 			
 			[Embed(source="assets/socketMessages.json", mimeType="application/octet-stream")]
@@ -14,10 +17,10 @@
 			
 			protected function init(event:FlexEvent):void 
 			{
-				var msgsSrc:Object = new SocketMessages();
-				//var msgsJSONSrc:String = 
+				var socketMsgsByteArray:ByteArrayAsset = new SocketMessages();
+				var msgsJSONSrc:String = socketMsgsByteArray.readUTFBytes(socketMsgsByteArray.length);
 				
-				//var messages:Object = JSON.parse(msgsJSONSrc);
+				GlobalVars.serverMessages = JSON.parse(msgsJSONSrc);
 			}
 			
 			protected function onSystemMasterClick(event:MouseEvent):void
