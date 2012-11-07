@@ -6,8 +6,10 @@
 		xmlns:views="com.creativedrewy.framepicapp.views.*"
 		actionBarVisible="false">
 	
-	<s:VGroup width="100%" height="100%">
-		<components:SetupUIRegionBox width="100%" height="50%" />
-		<components:SetupUIRegionBox width="100%" height="50%" />
-	</s:VGroup>
+	<s:TileGroup rowAlign="top" columnAlign="left" width="100%" height="100%">
+		<components:SetupUIRegionBox width="50%" height="50%" />
+		<components:SetupUIRegionBox width="50%" height="50%" />
+		<components:SetupUIRegionBox width="50%" height="50%" />
+		<components:SetupUIRegionBox width="50%" height="50%" />
+	</s:TileGroup>
 </views:SystemMasterViewController>

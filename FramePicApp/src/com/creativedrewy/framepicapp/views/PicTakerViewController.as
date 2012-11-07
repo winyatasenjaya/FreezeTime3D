@@ -33,12 +33,14 @@ package com.creativedrewy.framepicapp.views
 		public function PicTakerViewController()
 		{
 			super();
+			
+			_picTakerModel = new PicTakerModel();
+			_picTakerModel.addEventListener(ServerEvent.MESSAGE_RECEIVED, onServerMessageReceived, false, 0, true);
 		}
 		
 		protected function onStep1ButtonClick(event:MouseEvent):void
 		{
-			_picTakerModel = new PicTakerModel();
-			_picTakerModel.addEventListener(ServerEvent.MESSAGE_RECEIVED, onServerMessageReceived, false, 0, true);
+			_picTakerModel.initConnection();
 		}
 		
 		protected function onStep2ButtonClick(event:MouseEvent):void

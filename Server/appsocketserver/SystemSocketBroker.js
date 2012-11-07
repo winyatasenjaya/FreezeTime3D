@@ -32,6 +32,8 @@ module.exports.SystemSocketBroker = new Class({
     processMasterMessages: function(message, socket) {
         switch (message) {
             case this.socketMessages.masterMessages.register:
+                this.masterSocket = socket;
+                console.log("Master connection has been established");
                 break;
             case this.socketMessages.masterMessages.initPicTakerOrder:
                 break;
