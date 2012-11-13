@@ -165,3 +165,4 @@ pip-log.txt
 #FreezeTime3D Ignores
 .idea
 bin-debug
+Server/node_modules
