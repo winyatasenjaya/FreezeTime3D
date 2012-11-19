@@ -9,7 +9,7 @@ require('zappajs') "localhost", 7373, ->
 
     @view layout: ->
         doctype 5
-        html -
+        html ->
             head ->
                 title 'FreezeTime3D'
                 script src: '/index.js'
@@ -18,4 +18,4 @@ require('zappajs') "localhost", 7373, ->
                 @body
 
     @view index: ->
-        p "Status updates show here"
+        p "Shows what is going on with your Freeze-timing!"
