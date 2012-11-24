@@ -8,7 +8,5 @@ package com.creativedrewy.framepicapp.constants
 		public static const SERVER_HOST:String = "127.0.0.1";
 		//public static const SERVER_HOST:String = "192.168.10.105";
 		public static const SERVER_PORT:Number = 7474;
-		
-		public static var serverMessages:Object;
 	}
 }

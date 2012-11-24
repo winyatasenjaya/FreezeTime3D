@@ -13,8 +13,8 @@ package com.creativedrewy.framepicapp.model
 		 */		
 		public function MasterDeviceModel()
 		{
-			_roleString = GlobalVars.serverMessages.masterId;
-			_registerMessage = GlobalVars.serverMessages.masterMessages.register;
+			//_roleString = GlobalVars.serverMessages.masterId;
+			//_registerMessage = GlobalVars.serverMessages.masterMessages.register;
 		}
 		
 	}

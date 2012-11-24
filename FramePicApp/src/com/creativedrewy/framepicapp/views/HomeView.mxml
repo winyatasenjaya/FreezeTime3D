@@ -12,15 +12,9 @@
 			import mx.core.ByteArrayAsset;
 			import mx.events.FlexEvent;
 			
-			[Embed(source="assets/socketMessages.json", mimeType="application/octet-stream")]
-			public var SocketMessages:Class;
-			
 			protected function init(event:FlexEvent):void 
 			{
-				var socketMsgsByteArray:ByteArrayAsset = new SocketMessages();
-				var msgsJSONSrc:String = socketMsgsByteArray.readUTFBytes(socketMsgsByteArray.length);
 				
-				GlobalVars.serverMessages = JSON.parse(msgsJSONSrc);
 			}
 			
 			protected function onSystemMasterClick(event:MouseEvent):void

@@ -13,13 +13,18 @@ package com.creativedrewy.framepicapp.model
 		 */		
 		public function PicTakerModel()
 		{
-			_roleString = GlobalVars.serverMessages.picTakerId;
-			_registerMessage = GlobalVars.serverMessages.picTakerMessages.register;
+			_roleString = "picTaker";
+			_registerMessage = "RegisterPicTaker";
 		}
 		
 		public function submitOrder():void
 		{
-			//sendMessage(GlobalVars.serverMessages.picTakerMessages.submitOrder);
+			sendMessage("RequestingFrameOrder");
+		}
+		
+		public function submitReady():void
+		{
+			sendMessage("PicTakingReady");
 		}
 		
 	}
