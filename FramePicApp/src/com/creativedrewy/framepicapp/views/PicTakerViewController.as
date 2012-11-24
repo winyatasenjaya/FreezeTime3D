@@ -11,6 +11,7 @@ package com.creativedrewy.framepicapp.views
 	import mx.core.UIComponent;
 	
 	import spark.components.Button;
+	import spark.components.TextInput;
 	import spark.components.VGroup;
 	import spark.components.View;
 	
@@ -20,6 +21,7 @@ package com.creativedrewy.framepicapp.views
 	public class PicTakerViewController extends View
 	{
 		[Bindable] public var mainButtonsContainer:VGroup;
+		[Bindable] public var hostAddressTextInput:TextInput;
 		[Bindable] public var step1RegisterButton:Button;
 		[Bindable] public var step2OrderButton:Button;
 		[Bindable] public var step3ReadyButton:Button;
@@ -40,7 +42,7 @@ package com.creativedrewy.framepicapp.views
 		
 		protected function onStep1ButtonClick(event:MouseEvent):void
 		{
-			_picTakerModel.initConnection();
+			_picTakerModel.initConnection(hostAddressTextInput.text);
 		}
 		
 		protected function onStep2ButtonClick(event:MouseEvent):void

@@ -26,9 +26,9 @@ package com.creativedrewy.framepicapp.model
 		/**
 		 * Initialize the connection with the socekt server
 		 */
-		public function initConnection():void
+		public function initConnection(serverHost:String):void
 		{
-			_socketConnection = new Socket(GlobalVars.SERVER_HOST, GlobalVars.SERVER_PORT);
+			_socketConnection = new Socket(serverHost, GlobalVars.SERVER_PORT);
 			_socketConnection.addEventListener(Event.CONNECT, onSocketConnect, false, 0, true);
 			_socketConnection.addEventListener(ProgressEvent.SOCKET_DATA, onSocketData, false, 0, true);
 			//mySocket.addEventListener(Event.CLOSE, onSocketClose);

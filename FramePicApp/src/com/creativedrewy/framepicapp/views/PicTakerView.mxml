@@ -6,11 +6,18 @@
 		xmlns:views="com.creativedrewy.framepicapp.views.*"
 		actionBarVisible="false">
 	
-	<fx:Script></fx:Script>
+	<fx:Script>
+		<![CDATA[
+			import com.creativedrewy.framepicapp.constants.GlobalVars;
+		]]>
+	</fx:Script>
 	
 	<s:VGroup width="100%" height="100%" id="mainButtonsContainer">
 		<components:SetupUIRegionBox width="100%" height="33%">
 			<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+				<s:HGroup width="50%">
+					<s:TextInput id="hostAddressTextInput" width="100%" text="{GlobalVars.SERVER_HOST}" />
+				</s:HGroup>
 				<s:Button id="step1RegisterButton" label="1. Register" click="onStep1ButtonClick(event)" width="75%"
 						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
 			</s:VGroup>

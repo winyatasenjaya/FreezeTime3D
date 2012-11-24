@@ -38,6 +38,6 @@
 	
 	<s:VGroup horizontalAlign="center" verticalAlign="middle" height="100%" width="100%">
 		<s:Button label="Start Master" width="70%" skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" click="onSystemMasterClick(event)" />
-		<s:Button label="Start Photographer" width="70%" skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" click="onPicTakerClick(event)" />
+		<s:Button label="Start PicTaker" width="70%" skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" click="onPicTakerClick(event)" />
 	</s:VGroup>
 </views:HomeViewController>
