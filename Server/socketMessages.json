@@ -3,14 +3,21 @@
     "picTakerId": "picTaker",
     "masterMessages": {
         "register": "RegisterMaster",
+        "registerResponse": "RegisterMasterResponse",
         "initPicTakerOrder": "InitPictureTakerOrder",
-        "startFrameCapture": "StartFrameCapture"
+        "picTakerOrderUpdate": "PicTakerOrderUpdate",
+        "picTakerFrameReadyUpdate": "PicTakerFrameReadyUpdate",
+        "startFrameCapture": "StartFrameCapture",
+        "resetSystem": "ResetSystem"
     },
     "picTakerMessages": {
         "register": "RegisterPicTaker",
         "registerResponse": "RegisterPicTakerResponse",
-        "submitOrder": "SubmitPicOrder",
+        "serverOrderingStart": "ServerReadyForOrder",
+        "requestFrameOrder": "RequestingFrameOrder",
+        "frameOrderResponse": "FrameOrderResponse",
         "picTakingReady": "PicTakingReady",
-        "imgUploadReady": "ImageUploadReady"
+        "takeFramePic": "TakeFramePic",
+        "resetPicTaker": "ResetPicTaking"
     }
 }

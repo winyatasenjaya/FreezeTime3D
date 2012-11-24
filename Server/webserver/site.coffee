@@ -2,7 +2,7 @@ require('zappajs') "localhost", 7373, ->
     @use 'partials'
 
     @coffee '/index.js': ->
-        console.log "Client script from server"
+        #console.log "Client script from server"
 
     @get '/': ->
         @render 'index',
