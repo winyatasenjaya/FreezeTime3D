@@ -78,18 +78,22 @@ module.exports.SystemSocketBroker = new Class({
                 this.picSockets[socket.remoteAddress] = socket;
                 socket.write(this.socketMessages.picTakerMessages.registerResponse);
                 console.log("PicTaker has registered at address " + socket.remoteAddress);
+
                 break;
             case this.socketMessages.picTakerMessages.requestFrameOrder:
                 this.orderedSockets[this.currentFrameNumber] = socket;
+
+                socket.write(this.socketMessages.picTakerMessages.frameOrderResponse + "::payload::" + this.currentFrameNumber);
+                this.masterSocket.write(this.socketMessages.masterMessages.picTakerOrderUpdate);
+
+                console.log("PicTaker at " + socket.remoteAddress + " is frame number " + this.currentFrameNumber);
                 this.currentFrameNumber++;
 
-                socket.write(this.socketMessages.picTakerMessages.frameOrderResponse);  //TODO: Payload send along too
-                this.masterSocket.write(this.socketMessages.masterMessages.picTakerOrderUpdate);
-                console.log("PicTaker at " + socket.remoteAddress + " is frame number " + this.currentFrameNumber - 1);
                 break;
             case this.socketMessages.picTakerMessages.picTakingReady:
                 this.masterSocket.write(this.socketMessages.masterMessages.picTakerFrameReadyUpdate);
                 console.log("PicTaker at " + socket.remoteAddress + " is ready for frame capture");
+
                 break;
         }
     }
