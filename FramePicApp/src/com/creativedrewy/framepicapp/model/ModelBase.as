@@ -14,6 +14,7 @@ package com.creativedrewy.framepicapp.model
 	 */	
 	public class ModelBase extends EventDispatcher
 	{
+		protected var _payloadIdentifier:String = "::payload::";
 		protected var _socketConnection:Socket;
 		protected var _roleString:String;
 		protected var _registerMessage:String;
@@ -63,7 +64,13 @@ package com.creativedrewy.framepicapp.model
 		protected function onSocketData(event:ProgressEvent):void
 		{
 			var responseMessage:String = _socketConnection.readUTFBytes(_socketConnection.bytesAvailable);
-			dispatchEvent(new ServerEvent(ServerEvent.MESSAGE_RECEIVED, responseMessage));
+			var responsePayload:String = null;
+			
+			if (responseMessage.indexOf(_payloadIdentifier) != -1) {
+				
+			}
+			
+			dispatchEvent(new ServerEvent(ServerEvent.MESSAGE_RECEIVED, responseMessage, responsePayload));
 		}
 		
 	}
