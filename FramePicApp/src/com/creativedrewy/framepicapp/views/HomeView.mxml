@@ -14,7 +14,7 @@
 			
 			protected function init(event:FlexEvent):void 
 			{
-				
+				//adl bin-debug\FramePicApp-app.xml -profile mobileDevice
 			}
 			
 			protected function onSystemMasterClick(event:MouseEvent):void

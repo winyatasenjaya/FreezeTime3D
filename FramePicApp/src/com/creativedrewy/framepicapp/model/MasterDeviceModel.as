@@ -13,8 +13,23 @@ package com.creativedrewy.framepicapp.model
 		 */		
 		public function MasterDeviceModel()
 		{
-			//_roleString = GlobalVars.serverMessages.masterId;
-			//_registerMessage = GlobalVars.serverMessages.masterMessages.register;
+			_roleString = "master";
+			_registerMessage = "RegisterMaster";
+		}
+		
+		public function sendInitOrder():void
+		{
+			sendMessage("InitPictureTakerOrder");
+		}
+		
+		public function sendFreezeTime():void
+		{
+			sendMessage("StartFrameCapture");
+		}
+		
+		public function sendResetSystem():void
+		{
+			sendMessage("ResetSystem");
 		}
 		
 	}

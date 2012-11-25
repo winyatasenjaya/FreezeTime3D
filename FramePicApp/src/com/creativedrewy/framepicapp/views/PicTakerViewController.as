@@ -5,9 +5,14 @@ package com.creativedrewy.framepicapp.views
 	import com.creativedrewy.framepicapp.events.ServerEvent;
 	import com.creativedrewy.framepicapp.model.PicTakerModel;
 	
+	import flash.display.BitmapData;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.media.Camera;
+	import flash.media.CameraRoll;
 	import flash.media.Video;
+	import flash.utils.Timer;
 	
 	import mx.core.UIComponent;
 	
@@ -46,6 +51,7 @@ package com.creativedrewy.framepicapp.views
 		protected function onStep1ButtonClick(event:MouseEvent):void
 		{
 			_picTakerModel.initConnection(hostAddressTextInput.text);
+			//onStep3ButtonClick(null);
 		}
 		
 		protected function onStep2ButtonClick(event:MouseEvent):void
@@ -55,18 +61,37 @@ package com.creativedrewy.framepicapp.views
 		
 		protected function onStep3ButtonClick(event:MouseEvent):void
 		{
-			_picTakerModel.submitReady();
+			//_picTakerModel.submitReady();.
 			
 			mainButtonsContainer.visible = false;
 			
-//			var vidStream:Video = new Video(cameraViewport.width, cameraViewport.height);
-//			cameraViewport.addChild(vidStream);
-//			
 //			var camera:Camera = Camera.getCamera();
-//			camera.setMode(cameraViewport.width, cameraViewport.height, 10);
+//			camera.setMode(2750, 1650, 15);
+//			
+//			vidStream = new Video(camera.width, camera.height);
 //			vidStream.attachCamera(camera);
 //			
+//			cameraViewport.addChild(vidStream);
 //			cameraViewport.visible = true;
+//			
+//			vidStream.rotation = 90;
+//			vidStream.x = cameraViewport.width;
+//			
+//			var blah:Timer = new Timer(2000, 3);
+//			blah.addEventListener(TimerEvent.TIMER, onCameraViewportBlah, false, 0, true);
+//			blah.start();
+		}
+		
+		private var vidStream:Video;
+		
+		protected function onCameraViewportBlah(event:Event):void
+		{
+//			var testRoll:CameraRoll = new CameraRoll();
+//			
+//			var bitmapData:BitmapData = new BitmapData(vidStream.height, vidStream.width);
+//			bitmapData.draw(vidStream);
+//			
+//			testRoll.addBitmapData(bitmapData);
 		}
 		
 		/**
@@ -89,7 +114,9 @@ package com.creativedrewy.framepicapp.views
 				}
 				case "FrameOrderResponse": {
 					step3Container.enabled = true;
-					//TODO: This is where we get our order; update UI but need it from the message
+					
+					step2OrderButton.label = "Frame Number: " + event.messagePayload;
+					step2OrderButton.enabled = false;
 					break;
 				}
 				case "TakeFramePic": {

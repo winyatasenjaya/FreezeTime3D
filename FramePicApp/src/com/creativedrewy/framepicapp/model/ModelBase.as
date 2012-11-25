@@ -6,6 +6,7 @@ package com.creativedrewy.framepicapp.model
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
+	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.net.Socket;
 	
@@ -32,8 +33,8 @@ package com.creativedrewy.framepicapp.model
 			_socketConnection = new Socket(serverHost, GlobalVars.SERVER_PORT);
 			_socketConnection.addEventListener(Event.CONNECT, onSocketConnect, false, 0, true);
 			_socketConnection.addEventListener(ProgressEvent.SOCKET_DATA, onSocketData, false, 0, true);
+			_socketConnection.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler, false, 0, true);
 			//mySocket.addEventListener(Event.CLOSE, onSocketClose);
-			//addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 			//addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
 		}
 		
@@ -56,6 +57,7 @@ package com.creativedrewy.framepicapp.model
 			};
 			
 			_socketConnection.writeUTFBytes(JSON.stringify(msgObj));
+			_socketConnection.flush();
 		}
 		
 		/**
@@ -67,10 +69,18 @@ package com.creativedrewy.framepicapp.model
 			var responsePayload:String = null;
 			
 			if (responseMessage.indexOf(_payloadIdentifier) != -1) {
+				var msgParts:Array = responseMessage.split(_payloadIdentifier);
 				
+				responseMessage = msgParts[0];
+				responsePayload = msgParts[1];
 			}
 			
 			dispatchEvent(new ServerEvent(ServerEvent.MESSAGE_RECEIVED, responseMessage, responsePayload));
+		}
+		
+		protected function ioErrorHandler(event:IOErrorEvent):void
+		{
+			var errMsg:String = event.text;
 		}
 		
 	}
