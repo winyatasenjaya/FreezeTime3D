@@ -47,7 +47,7 @@ module.exports.SystemSocketBroker = new Class({
                     var currentSocket = this.picSockets[addressKey];
                     currentSocket.write(this.socketMessages.picTakerMessages.serverOrderingStart);
                 }
-                console.log("PicTaker ordering has been initialized");
+                console.log("PicTaker ordering has been initiated");
 
                 break;
             case this.socketMessages.masterMessages.startFrameCapture:
