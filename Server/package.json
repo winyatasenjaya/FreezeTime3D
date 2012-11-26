@@ -1,0 +1,10 @@
+{
+    "name": "FreezeTime3D Server",
+    "version": "0.1.0",
+    "author": "Andrew - {creative:drewy}",
+    "description": "Socket server and website for FreezeTime3D system",
+    "keywords": [ ],
+    "dependencies": {
+        "mootools": "0.x.x"
+    }
+}
