@@ -6,6 +6,6 @@
     "keywords": [ ],
     "dependencies": {
         "mootools": "1.4.x",
-        "zappajs": "0.4."x
+        "zappajs": "0.4.x"
     }
 }
