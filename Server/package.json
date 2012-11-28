@@ -5,6 +5,7 @@
     "description": "Socket server and website for FreezeTime3D system",
     "keywords": [ ],
     "dependencies": {
-        "mootools": "0.x.x"
+        "mootools": "1.4.x",
+        "zappajs": "0.4."x
     }
 }
