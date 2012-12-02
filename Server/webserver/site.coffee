@@ -1,8 +1,6 @@
-require('zappajs') "localhost", 7373, ->
+require('zappajs') process.env.IP, 7373, ->
+    @enable 'zappa'
     @use 'partials'
-
-    @coffee '/index.js': ->
-        #console.log "Client script from server"
 
     @get '/': ->
         @render 'index',
@@ -12,6 +10,8 @@ require('zappajs') "localhost", 7373, ->
         html ->
             head ->
                 title 'FreezeTime3D'
+                script src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'
+                #script src: '/zappa/Zappa.js'
                 script src: '/index.js'
             body ->
                 h1 'FreezeTime3D'
