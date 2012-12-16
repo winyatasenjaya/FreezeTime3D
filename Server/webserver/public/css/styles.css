@@ -1,0 +1,14 @@
+
+.grid-container {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid black;
+}
+
+.pic-taker-cell {
+    width: 177px;
+    height: 100px;
+    border: 1px solid red;
+    float: left;
+    margin: 6px;
+}

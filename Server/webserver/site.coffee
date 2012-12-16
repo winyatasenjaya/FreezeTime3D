@@ -1,21 +1,26 @@
 require('zappajs') process.env.IP, 7373, ->
     @use 'partials'
-    @use 'bodyParser'
-
+    @use 'bodyParser', static: __dirname + '/public'
     @use require('connect-assets')
         src: './webserver/assets'
 
-    @on connection: ->
-        console.log "A connection has been made to us from: " + @id
+    serverSocket = undefined
+    websiteSocket = undefined
 
-    @on msg: ->
-        console.log "Here is some data: " + @data.my
+    @on 'id': ->
+        if @data.client is 'website'
+            websiteSocket = @socket
+        else
+            serverSocket = @socket
+
+    #@on 'serverMsg': ->
+    #    switch @data
+    #        when "something" then someFunc
+
+    @view index: ->
 
     @get '/': ->
         @render 'index'
-
-    @view index: ->
-        p "Welcome to FreezeTime3D!"
 
 #    @get '/upload': ->
 #        @render 'upload'
@@ -45,10 +50,14 @@ require('zappajs') process.env.IP, 7373, ->
         html ->
             head ->
                 title 'FreezeTime3D'
+                link href: '/css/styles.css', rel: 'stylesheet'
                 script src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'
                 script src: '/socket.io/socket.io.js'
                 js 'app'
             body ->
                 h1 'FreezeTime3D'
-                @body
+                p class: "status-field"
+                div class: "grid-container", ->
+                    div class: "pic-taker-cell", ->
+                        p "1"
 
