@@ -9,8 +9,15 @@ module.exports.SystemSocketBroker = new Class({
     currentFrameNumber: 0,
     messagesJSONPath: "./socketMessages.json",
     socketMessages: {},
+    websiteMessagingSocket: null,
 
-    initialize: function() {
+    /**
+     * @constructor
+     * @param websiteClientSocket A client websocket connection to the status website for update messaging
+     */
+    initialize: function(websiteClientSocket) {
+        this.websiteMessagingSocket = websiteClientSocket;
+
         var msgContents = require("fs").readFileSync(this.messagesJSONPath, "utf8");
         this.socketMessages = JSON.decode(msgContents);
     },
@@ -22,16 +29,16 @@ module.exports.SystemSocketBroker = new Class({
      */
     processSystemMessages: function(data, socket) {
         if (data.role == this.socketMessages.masterId) {
-            this.processMasterMessages(data.message, socket);
+            this.processMasterMessages(socket, data.message);
         } else if (data.role == this.socketMessages.picTakerId) {
-            this.processPicTakerMessages(data.message, socket);
+            this.processPicTakerMessages(socket, data.message); //TODO: We can now facilitate a payload in the received JSON
         }
     },
 
     /**
      * Process messages for the Master connection
      */
-    processMasterMessages: function(message, socket) {
+    processMasterMessages: function(socket, message) {
         switch (message) {
             case this.socketMessages.masterMessages.register:
                 this.masterSocket = socket;
@@ -72,7 +79,7 @@ module.exports.SystemSocketBroker = new Class({
     /**
      * Process messages for PicTaker connections
      */
-    processPicTakerMessages: function(message, socket) {
+    processPicTakerMessages: function(socket, message) {
         switch (message) {
             case this.socketMessages.picTakerMessages.register:
                 this.picSockets[socket.remoteAddress] = socket;

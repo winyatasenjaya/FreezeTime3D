@@ -11,7 +11,6 @@ SocketEvents.TIMEOUT = 'timeout';
 module.exports.MobileAppsSocketController = new Class({
     host: "",
     port: -1,
-    socketTimeout: 5000,
     socketServer: null,
     policyRequestString: "<policy-file-request/>\0",
     policyFilePath: "./flashpolicy.xml",
@@ -21,8 +20,12 @@ module.exports.MobileAppsSocketController = new Class({
 
     /**
      * @constructor
+     * @param netLib Nodejs net library
+     * @param hostName Socket server host name/IP
+     * @param hostPort Socket server host port
+     * @param websiteMessagingSocket A client websocket connection to the status website for update messaging
      */
-    initialize: function(netLib, hostName, hostPort) {
+    initialize: function(netLib, hostName, hostPort, websiteMessagingSocket) {
         this.host = hostName;
         this.port = hostPort;
 
@@ -34,7 +37,7 @@ module.exports.MobileAppsSocketController = new Class({
             socket.on(SocketEvents.END, this.onSocketEnd.bind(this, socket));
         }.bind(this));
 
-        this.socketBroker = new (require("./SystemSocketBroker")).SystemSocketBroker();
+        this.socketBroker = new (require("./SystemSocketBroker")).SystemSocketBroker(websiteMessagingSocket);
     },
 
     /**
@@ -45,7 +48,7 @@ module.exports.MobileAppsSocketController = new Class({
             this.policyContents = fileData;
             this.socketServer.listen(this.port, this.host);
 
-            console.log("Socket server has been started on port " + this.port + "");
+            console.log("FreezeTime3D socket server has been started on port " + this.port + "");
         }.bind(this));
     },
 
@@ -66,14 +69,12 @@ module.exports.MobileAppsSocketController = new Class({
             var sentJSON = JSON.decode(data);
             this.socketBroker.processSystemMessages(sentJSON, socket);
         }
-
-        //console.log("Socket data received: ", data);
     },
 
     onSocketEnd: function(socket) {
+        //TODO: Not seeing much in the way of unique IDs for socket at this point...don't know how to
+        //remove from global collection, update website, and so on
         console.log("Socket connection ended with a device");
-
-        //TODO: Not seeing much in the way of unique IDs for socket at this point...don't know how to remove from global collection
     }
 
 });

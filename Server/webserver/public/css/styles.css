@@ -1,14 +1,38 @@
 
+body {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+}
+
+body > h1 {
+    font-size: 35px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
 .grid-container {
+    margin-top: 20px;
+    margin-right: 20px;
     width: 100%;
     overflow: hidden;
-    border: 1px solid black;
+    border: 1px solid #888888;
+    display: table;
 }
 
 .pic-taker-cell {
+    display: table-cell;
+    text-align: center;
     width: 177px;
     height: 100px;
-    border: 1px solid red;
+    border: 1px solid #888888;
     float: left;
     margin: 6px;
+}
+
+.pic-taker-cell p {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 100px;
 }

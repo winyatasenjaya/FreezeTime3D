@@ -4,14 +4,14 @@ require('zappajs') process.env.IP, 7373, ->
     @use require('connect-assets')
         src: './webserver/assets'
 
-    serverSocket = undefined
-    websiteSocket = undefined
+    #serverSocket = undefined
+    statusUpdateClientSocket = undefined
 
     @on 'id': ->
         if @data.client is 'website'
-            websiteSocket = @socket
-        else
-            serverSocket = @socket
+            statusUpdateClientSocket = @socket
+        #else
+        #    serverSocket = @socket
 
     #@on 'serverMsg': ->
     #    switch @data
@@ -50,14 +50,14 @@ require('zappajs') process.env.IP, 7373, ->
         html ->
             head ->
                 title 'FreezeTime3D'
-                link href: '/css/styles.css', rel: 'stylesheet'
+                link href: 'http://yui.yahooapis.com/3.8.0/build/cssreset/cssreset-min.css', rel: 'stylesheet'
                 script src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'
+                link href: '/css/styles.css', rel: 'stylesheet'
                 script src: '/socket.io/socket.io.js'
                 js 'app'
             body ->
                 h1 'FreezeTime3D'
                 p class: "status-field"
                 div class: "grid-container", ->
-                    div class: "pic-taker-cell", ->
-                        p "1"
+                    #div class: "pic-taker-cell", -> p "1"
 
