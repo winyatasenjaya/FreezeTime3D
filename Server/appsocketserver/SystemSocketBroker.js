@@ -43,8 +43,9 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.masterMessages.register:
                 this.masterSocket = socket;
                 this.masterSocket.write(this.socketMessages.masterMessages.registerResponse);
-                console.log("Master connection has been established");
+                this.websiteMessagingSocket.emit('systemMsg', {msg: "masterRegister"})
 
+                console.log("Master connection has been established");
                 break;
             case this.socketMessages.masterMessages.initPicTakerOrder:
                 this.currentFrameNumber = 0;

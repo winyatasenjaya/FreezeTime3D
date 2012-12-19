@@ -4,18 +4,15 @@ require('zappajs') process.env.IP, 7373, ->
     @use require('connect-assets')
         src: './webserver/assets'
 
-    #serverSocket = undefined
     statusUpdateClientSocket = undefined
 
-    @on 'id': ->
-        if @data.client is 'website'
-            statusUpdateClientSocket = @socket
-        #else
-        #    serverSocket = @socket
+    @on 'idClientConnection': ->
+        statusUpdateClientSocket = @socket
 
-    #@on 'serverMsg': ->
-    #    switch @data
-    #        when "something" then someFunc
+    @on 'systemMsg': ->
+        switch @data.msg
+            when "masterRegister" then statusUpdateClientSocket.emit 'update', {msg: "aTestUpdate"}
+            #when "else" then somethingElse
 
     @view index: ->
 
