@@ -12,8 +12,18 @@ body > h1 {
     margin-bottom: 15px;
 }
 
-.grid-container {
+.status-field {
+    border: 1px solid #BB0000;
+    width: 50%;
+    padding: 5px;
+}
+
+.pic-takers-label {
     margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.grid-container {
     margin-right: 20px;
     width: 100%;
     overflow: hidden;

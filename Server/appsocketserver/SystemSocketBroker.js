@@ -85,8 +85,9 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.picTakerMessages.register:
                 this.picSockets[socket.remoteAddress] = socket;
                 socket.write(this.socketMessages.picTakerMessages.registerResponse);
-                console.log("PicTaker has registered at address " + socket.remoteAddress);
+                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register})
 
+                console.log("PicTaker has registered at address " + socket.remoteAddress);
                 break;
             case this.socketMessages.picTakerMessages.requestFrameOrder:
                 this.orderedSockets[this.currentFrameNumber] = socket;

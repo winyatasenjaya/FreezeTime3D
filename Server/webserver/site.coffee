@@ -9,7 +9,7 @@ require('zappajs') process.env.IP, 7373, ->
     masterMessages = systemMessagesJSON.masterMessages
     picTakerMessages = systemMessagesJSON.picTakerMessages
 
-    sendClientMsg = (msgString) ->
+    sendClientMsg = (msgString, payload) ->
         statusUpdateClientSocket.emit 'update', {msg: msgString}
 
     @on 'idClientConnection': ->
@@ -17,11 +17,11 @@ require('zappajs') process.env.IP, 7373, ->
 
     @on 'systemMsg': ->
         switch @data.msg
-            when masterMessages.register then sendClientMsg "registerMaster"
-            when masterMessages.initPicTakerOrder then sendClientMsg "initPicTaker" #TODO: Sets the session timestamp as well
+            when masterMessages.register then sendClientMsg "registerMasterTEMP"
+            when masterMessages.initPicTakerOrder then sendClientMsg "initPicTakerOrderTEMP" #TODO: Sets the session timestamp as well
             #masterMessages.startFrameCapture
             #masterMessages.resetSystem
-            #picTakerMessages.register
+            when picTakerMessages.register then sendClientMsg "picTakerHasRegisteredTEMP"
             #picTakerMessages.requestFrameOrder
             #picTakerMessages.picTakingReady
 
@@ -66,6 +66,7 @@ require('zappajs') process.env.IP, 7373, ->
             body ->
                 h1 'FreezeTime3D'
                 p class: "status-field"
+                p class: "pic-takers-label", -> "Pic Takers:"
                 div class: "grid-container", ->
-                    #div class: "pic-taker-cell", -> p "1"
+
 
