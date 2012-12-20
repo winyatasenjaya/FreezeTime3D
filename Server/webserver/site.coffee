@@ -5,14 +5,25 @@ require('zappajs') process.env.IP, 7373, ->
         src: './webserver/assets'
 
     statusUpdateClientSocket = undefined
+    systemMessagesJSON = JSON.decode(require("fs").readFileSync("./socketMessages.json", "utf8"))
+    masterMessages = systemMessagesJSON.masterMessages
+    picTakerMessages = systemMessagesJSON.picTakerMessages
+
+    sendClientMsg = (msgString) ->
+        statusUpdateClientSocket.emit 'update', {msg: msgString}
 
     @on 'idClientConnection': ->
         statusUpdateClientSocket = @socket
 
     @on 'systemMsg': ->
         switch @data.msg
-            when "masterRegister" then statusUpdateClientSocket.emit 'update', {msg: "aTestUpdate"}
-            #when "else" then somethingElse
+            when masterMessages.register then sendClientMsg "registerMaster"
+            when masterMessages.initPicTakerOrder then sendClientMsg "initPicTaker" #TODO: Sets the session timestamp as well
+            #masterMessages.startFrameCapture
+            #masterMessages.resetSystem
+            #picTakerMessages.register
+            #picTakerMessages.requestFrameOrder
+            #picTakerMessages.picTakingReady
 
     @view index: ->
 

@@ -43,7 +43,7 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.masterMessages.register:
                 this.masterSocket = socket;
                 this.masterSocket.write(this.socketMessages.masterMessages.registerResponse);
-                this.websiteMessagingSocket.emit('systemMsg', {msg: "masterRegister"})
+                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.register})
 
                 console.log("Master connection has been established");
                 break;
