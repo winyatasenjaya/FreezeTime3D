@@ -43,7 +43,7 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.masterMessages.register:
                 this.masterSocket = socket;
                 this.masterSocket.write(this.socketMessages.masterMessages.registerResponse);
-                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.register})
+                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.register});
 
                 console.log("Master connection has been established");
                 break;
@@ -55,8 +55,9 @@ module.exports.SystemSocketBroker = new Class({
                     var currentSocket = this.picSockets[addressKey];
                     currentSocket.write(this.socketMessages.picTakerMessages.serverOrderingStart);
                 }
-                console.log("PicTaker ordering has been initiated");
+                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.initPicTakerOrder});
 
+                console.log("PicTaker ordering has been initiated");
                 break;
             case this.socketMessages.masterMessages.startFrameCapture:
                 console.log("Frame capturing beginning - get ready to freeze time!")
@@ -85,7 +86,7 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.picTakerMessages.register:
                 this.picSockets[socket.remoteAddress] = socket;
                 socket.write(this.socketMessages.picTakerMessages.registerResponse);
-                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register})
+                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register});
 
                 console.log("PicTaker has registered at address " + socket.remoteAddress);
                 break;
@@ -94,6 +95,10 @@ module.exports.SystemSocketBroker = new Class({
 
                 socket.write(this.socketMessages.picTakerMessages.frameOrderResponse + "::payload::" + this.currentFrameNumber);
                 this.masterSocket.write(this.socketMessages.masterMessages.picTakerOrderUpdate);
+                this.websiteMessagingSocket.emit('systemMsg', {
+                    msg: this.socketMessages.picTakerMessages.requestFrameOrder,
+                    payload: this.currentFrameNumber
+                });
 
                 console.log("PicTaker at " + socket.remoteAddress + " is frame number " + this.currentFrameNumber);
                 this.currentFrameNumber++;

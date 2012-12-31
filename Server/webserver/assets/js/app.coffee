@@ -25,7 +25,9 @@ $ ->
         siteSocket.on 'update', (data) ->
             switch data.msg
                 when "registerMasterTEMP" then updateStatusField "Master registered. Next up: Pic Taker ordering."
+                when "initPicTakerOrderTEMP" then updateStatusField "Pic Taker ordering started. Master will tell you when to submit."
                 when "picTakerHasRegisteredTEMP" then do addPicTakerStatusBox
+                when "picTakerHasOrderedTEMP" then $(gridContainer.children("div").get(data.payload)).find("p").html("Ordered: " + data.payload)
 
     ###
     Add a status box for a connected Pic Taker to the UI

@@ -5,12 +5,15 @@ require('zappajs') process.env.IP, 7373, ->
         src: './webserver/assets'
 
     statusUpdateClientSocket = undefined
-    systemMessagesJSON = JSON.decode(require("fs").readFileSync("./socketMessages.json", "utf8"))
+    freezeTimeSessionId = undefined
+    sessionDirPath = undefined
+    fsLib = require("fs")
+    systemMessagesJSON = JSON.decode(fsLib.readFileSync("./socketMessages.json", "utf8"))
     masterMessages = systemMessagesJSON.masterMessages
     picTakerMessages = systemMessagesJSON.picTakerMessages
 
-    sendClientMsg = (msgString, payload) ->
-        statusUpdateClientSocket.emit 'update', {msg: msgString}
+    sendClientMsg = (msgString, payloadData) ->
+        statusUpdateClientSocket.emit 'update', {msg: msgString, payload: payloadData}
 
     @on 'idClientConnection': ->
         statusUpdateClientSocket = @socket
@@ -18,11 +21,15 @@ require('zappajs') process.env.IP, 7373, ->
     @on 'systemMsg': ->
         switch @data.msg
             when masterMessages.register then sendClientMsg "registerMasterTEMP"
-            when masterMessages.initPicTakerOrder then sendClientMsg "initPicTakerOrderTEMP" #TODO: Sets the session timestamp as well
+            when masterMessages.initPicTakerOrder then do ->
+                freezeTimeSessionId = "FT3D-" + new Date().getTime()
+                sessionDirPath = "./sessions/" + freezeTimeSessionId
+                fsLib.mkdirSync sessionDirPath
+                sendClientMsg "initPicTakerOrderTEMP"
             #masterMessages.startFrameCapture
             #masterMessages.resetSystem
             when picTakerMessages.register then sendClientMsg "picTakerHasRegisteredTEMP"
-            #picTakerMessages.requestFrameOrder
+            when picTakerMessages.requestFrameOrder then sendClientMsg "picTakerHasOrderedTEMP", @data.payload
             #picTakerMessages.picTakingReady
 
     @view index: ->

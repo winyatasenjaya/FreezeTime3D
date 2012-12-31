@@ -6,9 +6,11 @@
 		creationComplete="initSkin()">
 	
 	<fx:Script>
-		private function initSkin():void {
-			outline.color = getStyle('color');
-		}
+		<![CDATA[
+			public function initSkin():void {
+				outline.color = getStyle('color');
+			}
+		]]>
 	</fx:Script>
 	
 	<fx:Metadata>
