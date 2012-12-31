@@ -30,7 +30,7 @@ require('zappajs') process.env.IP, 7373, ->
             #masterMessages.resetSystem
             when picTakerMessages.register then sendClientMsg "picTakerHasRegisteredTEMP"
             when picTakerMessages.requestFrameOrder then sendClientMsg "picTakerHasOrderedTEMP", @data.payload
-            #picTakerMessages.picTakingReady
+            when picTakerMessages.picTakingReady then sendClientMsg "picTakerIsReadyTEMP", @data.payload
 
     @view index: ->
 

@@ -31,7 +31,7 @@ module.exports.SystemSocketBroker = new Class({
         if (data.role == this.socketMessages.masterId) {
             this.processMasterMessages(socket, data.message);
         } else if (data.role == this.socketMessages.picTakerId) {
-            this.processPicTakerMessages(socket, data.message); //TODO: We can now facilitate a payload in the received JSON
+            this.processPicTakerMessages(socket, data.message, data.payload);
         }
     },
 
@@ -42,7 +42,7 @@ module.exports.SystemSocketBroker = new Class({
         switch (message) {
             case this.socketMessages.masterMessages.register:
                 this.masterSocket = socket;
-                this.masterSocket.write(this.socketMessages.masterMessages.registerResponse);
+                this.sendAppSocketMessage(this.masterSocket, this.socketMessages.masterMessages.registerResponse);
                 this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.register});
 
                 console.log("Master connection has been established");
@@ -53,7 +53,7 @@ module.exports.SystemSocketBroker = new Class({
 
                 for (var addressKey in this.picSockets) {
                     var currentSocket = this.picSockets[addressKey];
-                    currentSocket.write(this.socketMessages.picTakerMessages.serverOrderingStart);
+                    this.sendAppSocketMessage(currentSocket, this.socketMessages.picTakerMessages.serverOrderingStart);
                 }
                 this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.initPicTakerOrder});
 
@@ -63,17 +63,17 @@ module.exports.SystemSocketBroker = new Class({
                 console.log("Frame capturing beginning - get ready to freeze time!")
                 for (var i = 0; i < this.currentFrameNumber; i++) {
                     var currentSocketInOrder = this.orderedSockets[i];
-                    currentSocketInOrder.write(this.socketMessages.picTakerMessages.takeFramePic);
+                    this.sendAppSocketMessage(currentSocketInOrder, this.socketMessages.picTakerMessages.takeFramePic);
                 }
 
                 break;
             case this.socketMessages.masterMessages.resetSystem:
                 for (var addressKey in this.picSockets) {
                     var currentSocket = this.picSockets[addressKey];
-                    currentSocket.write(this.socketMessages.picTakerMessages.resetPicTaker);
+                    this.sendAppSocketMessage(currentSocket, this.socketMessages.picTakerMessages.resetPicTaker);
                 }
-                console.log("System has been reset for next frame capture operation");
 
+                console.log("System has been reset for next frame capture operation");
                 break;
         }
     },
@@ -81,11 +81,11 @@ module.exports.SystemSocketBroker = new Class({
     /**
      * Process messages for PicTaker connections
      */
-    processPicTakerMessages: function(socket, message) {
+    processPicTakerMessages: function(socket, message, receivedPayload) {
         switch (message) {
             case this.socketMessages.picTakerMessages.register:
                 this.picSockets[socket.remoteAddress] = socket;
-                socket.write(this.socketMessages.picTakerMessages.registerResponse);
+                this.sendAppSocketMessage(socket, this.socketMessages.picTakerMessages.registerResponse);
                 this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register});
 
                 console.log("PicTaker has registered at address " + socket.remoteAddress);
@@ -93,8 +93,8 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.picTakerMessages.requestFrameOrder:
                 this.orderedSockets[this.currentFrameNumber] = socket;
 
-                socket.write(this.socketMessages.picTakerMessages.frameOrderResponse + "::payload::" + this.currentFrameNumber);
-                this.masterSocket.write(this.socketMessages.masterMessages.picTakerOrderUpdate);
+                this.sendAppSocketMessage(socket, this.socketMessages.picTakerMessages.frameOrderResponse, this.currentFrameNumber);
+                this.sendAppSocketMessage(this.masterSocket, this.socketMessages.masterMessages.picTakerOrderUpdate);
                 this.websiteMessagingSocket.emit('systemMsg', {
                     msg: this.socketMessages.picTakerMessages.requestFrameOrder,
                     payload: this.currentFrameNumber
@@ -105,11 +105,25 @@ module.exports.SystemSocketBroker = new Class({
 
                 break;
             case this.socketMessages.picTakerMessages.picTakingReady:
-                this.masterSocket.write(this.socketMessages.masterMessages.picTakerFrameReadyUpdate);
-                console.log("PicTaker at " + socket.remoteAddress + " is ready for frame capture");
+                this.sendAppSocketMessage(this.masterSocket, this.socketMessages.masterMessages.picTakerFrameReadyUpdate);
+                this.websiteMessagingSocket.emit('systemMsg', {
+                    msg: this.socketMessages.picTakerMessages.picTakingReady,
+                    payload: receivedPayload
+                });
 
+                console.log("PicTaker at " + socket.remoteAddress + " is ready for frame capture");
                 break;
         }
+    },
+
+    /**
+     * Send a message to a socket-connected app instance. Able to send message string and payload data.
+     */
+    sendAppSocketMessage: function(destSocket, messageString, payloadData) {
+        destSocket.write(JSON.encode({
+            msg: messageString,
+            payload: payloadData
+        }));
     }
 
 });

@@ -22,9 +22,12 @@ package com.creativedrewy.framepicapp.model
 			sendMessage("RequestingFrameOrder");
 		}
 		
-		public function submitReady():void
+		/**
+		 * When a pic taker is ready, it sends along its frame number so that the system can update accordingly
+		 */		
+		public function submitReady(frameNumber:int):void
 		{
-			sendMessage("PicTakingReady");
+			sendMessage("PicTakingReady", frameNumber);
 		}
 		
 	}

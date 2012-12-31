@@ -28,6 +28,7 @@ $ ->
                 when "initPicTakerOrderTEMP" then updateStatusField "Pic Taker ordering started. Master will tell you when to submit."
                 when "picTakerHasRegisteredTEMP" then do addPicTakerStatusBox
                 when "picTakerHasOrderedTEMP" then $(gridContainer.children("div").get(data.payload)).find("p").html("Ordered: " + data.payload)
+                when "picTakerIsReadyTEMP" then $(gridContainer.children("div").get(data.payload)).find("p").html(data.payload + ": Ready")
 
     ###
     Add a status box for a connected Pic Taker to the UI

@@ -43,6 +43,7 @@ package com.creativedrewy.framepicapp.views
 		[Bindable] public var cameraViewport:UIComponent;
 		
 		private var _picTakerModel:PicTakerModel;
+		private var _picFrameNumber:int = -1;
 		private var _camVideoStream:Video;
 		private var _imageFile:File;
 		private var _imageDirectory:String = "FreezeTime3D/";
@@ -81,21 +82,21 @@ package com.creativedrewy.framepicapp.views
 		 */		
 		protected function onStep3ButtonClick(event:MouseEvent):void
 		{
-			_picTakerModel.submitReady();
+			_picTakerModel.submitReady(_picFrameNumber);
 			
-			mainButtonsContainer.visible = false;
-			var camera:Camera = Camera.getCamera();
-			
-			_camVideoStream = new Video(800, 480);
-			_camVideoStream.attachCamera(camera);
-			
-			camera.setMode(800, 480, 20, false);
-			
-			cameraViewport.addChild(_camVideoStream);
-			cameraViewport.visible = true;
-			
-			_camVideoStream.rotation = 90;
-			_camVideoStream.x = cameraViewport.width;
+//			mainButtonsContainer.visible = false;
+//			var camera:Camera = Camera.getCamera();
+//			
+//			_camVideoStream = new Video(800, 480);
+//			_camVideoStream.attachCamera(camera);
+//			
+//			camera.setMode(800, 480, 20, false);
+//			
+//			cameraViewport.addChild(_camVideoStream);
+//			cameraViewport.visible = true;
+//			
+//			_camVideoStream.rotation = 90;
+//			_camVideoStream.x = cameraViewport.width;
 		}
 		
 		/**
@@ -143,14 +144,15 @@ package com.creativedrewy.framepicapp.views
 					break;
 				}
 				case "FrameOrderResponse": {
+					_picFrameNumber = parseInt(event.messagePayload);
 					step3Container.enabled = true;
 					
-					step2OrderButton.label = "Frame Number: " + event.messagePayload;
+					step2OrderButton.label = "Frame Number: " + _picFrameNumber;
 					step2OrderButton.enabled = false;
 					
 					var now:Date = new Date();
 					
-					_imgFileName = "frame_" + event.messagePayload + "_" + now.time + ".jpg";
+					_imgFileName = "frame_" + _picFrameNumber + "_" + now.time + ".jpg";
 					break;
 				}
 				case "TakeFramePic": {

@@ -15,7 +15,6 @@ package com.creativedrewy.framepicapp.model
 	 */	
 	public class ModelBase extends EventDispatcher
 	{
-		protected var _payloadIdentifier:String = "::payload::";
 		protected var _socketConnection:Socket;
 		protected var _roleString:String;
 		protected var _registerMessage:String;
@@ -49,11 +48,12 @@ package com.creativedrewy.framepicapp.model
 		/**
 		 * Send a message to the socket server; it is converted to a small JSON obj for identification
 		 */		
-		public function sendMessage(messageString:String):void
+		public function sendMessage(messageString:String, payloadData:* = null):void
 		{
 			var msgObj:Object = {
 				role: _roleString,
-				message: messageString
+				message: messageString,
+				payload: payloadData
 			};
 			
 			_socketConnection.writeUTFBytes(JSON.stringify(msgObj));
@@ -65,17 +65,10 @@ package com.creativedrewy.framepicapp.model
 		 */		
 		protected function onSocketData(event:ProgressEvent):void
 		{
-			var responseMessage:String = _socketConnection.readUTFBytes(_socketConnection.bytesAvailable);
-			var responsePayload:String = null;
+			var responseBytes:String = _socketConnection.readUTFBytes(_socketConnection.bytesAvailable);
+			var responseJSON:Object = JSON.parse(responseBytes);
 			
-			if (responseMessage.indexOf(_payloadIdentifier) != -1) {
-				var msgParts:Array = responseMessage.split(_payloadIdentifier);
-				
-				responseMessage = msgParts[0];
-				responsePayload = msgParts[1];
-			}
-			
-			dispatchEvent(new ServerEvent(ServerEvent.MESSAGE_RECEIVED, responseMessage, responsePayload));
+			dispatchEvent(new ServerEvent(ServerEvent.MESSAGE_RECEIVED, responseJSON.msg, responseJSON.payload));
 		}
 		
 		protected function ioErrorHandler(event:IOErrorEvent):void
