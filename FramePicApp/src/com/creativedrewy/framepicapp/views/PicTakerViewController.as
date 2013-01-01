@@ -84,19 +84,19 @@ package com.creativedrewy.framepicapp.views
 		{
 			_picTakerModel.submitReady(_picFrameNumber);
 			
-//			mainButtonsContainer.visible = false;
-//			var camera:Camera = Camera.getCamera();
-//			
-//			_camVideoStream = new Video(800, 480);
-//			_camVideoStream.attachCamera(camera);
-//			
-//			camera.setMode(800, 480, 20, false);
-//			
-//			cameraViewport.addChild(_camVideoStream);
-//			cameraViewport.visible = true;
-//			
-//			_camVideoStream.rotation = 90;
-//			_camVideoStream.x = cameraViewport.width;
+			mainButtonsContainer.visible = false;
+			var camera:Camera = Camera.getCamera();
+			
+			_camVideoStream = new Video(800, 480);
+			_camVideoStream.attachCamera(camera);
+			
+			camera.setMode(800, 480, 20, false);
+			
+			cameraViewport.addChild(_camVideoStream);
+			cameraViewport.visible = true;
+			
+			_camVideoStream.rotation = 90;
+			_camVideoStream.x = cameraViewport.width;
 		}
 		
 		/**
