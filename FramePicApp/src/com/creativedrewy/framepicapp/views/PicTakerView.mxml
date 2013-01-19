@@ -18,20 +18,17 @@
 				<s:HGroup width="50%">
 					<s:TextInput id="hostAddressTextInput" width="100%" text="{GlobalVars.SERVER_HOST}" />
 				</s:HGroup>
-				<s:Button id="step1RegisterButton" label="1. Register" click="onStep1ButtonClick(event)" width="75%"
-						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
+				<s:Button id="step1RegisterButton" label="1. Register" click="onStep1ButtonClick(event)" width="75%" />
 			</s:VGroup>
 		</components:SetupUIRegionBox>
 		<components:SetupUIRegionBox width="100%" height="33%" enabled="false" id="step2Container">
 			<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
-				<s:Button id="step2OrderButton" label="2. Submit Pic Order" click="onStep2ButtonClick(event)" width="75%"
-						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
+				<s:Button id="step2OrderButton" label="2. Submit Pic Order" click="onStep2ButtonClick(event)" width="75%" />
 			</s:VGroup>
 		</components:SetupUIRegionBox>
 		<components:SetupUIRegionBox width="100%" height="33%" enabled="false" id="step3Container">
 			<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
-				<s:Button id="step3ReadyButton" label="3. Ready!" click="onStep3ButtonClick(event)" width="75%"
-						  skinClass="com.creativedrewy.framepicapp.skins.PrimaryButtonSkin" />
+				<s:Button id="step3ReadyButton" label="3. Ready!" click="onStep3ButtonClick(event)" width="75%" />
 			</s:VGroup>
 		</components:SetupUIRegionBox>
 	</s:VGroup>

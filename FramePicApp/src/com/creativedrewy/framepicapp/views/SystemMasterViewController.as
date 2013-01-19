@@ -51,7 +51,7 @@ package com.creativedrewy.framepicapp.views
 			_orderDevices = 0;
 			_readyDevices = 0;
 			
-			step2InitOrderingButton.label = "Ordering Started";
+			step2InitOrderingButton.label = "Started";
 			step2InitOrderingButton.enabled = false;
 			devicesOrderedLabel.text = _orderDevices + " device(s) ordered";
 			
@@ -76,7 +76,7 @@ package com.creativedrewy.framepicapp.views
 		{
 			switch (event.serverMessage) {
 				case "RegisterMasterResponse": {
-					step1RegisterButton.label = "Master Device";
+					step1RegisterButton.label = "Is master";
 					step1RegisterButton.enabled = false;
 					
 					initOrderContainer.enabled = true;

@@ -31,7 +31,7 @@ require('zappajs') process.env.IP, 7373, ->
                 sessionDirPath = "./sessions/" + freezeTimeSessionId
                 fsLib.mkdirSync sessionDirPath
                 sendClientMsg "initPicTakerOrderFC"
-            #masterMessages.startFrameCapture
+            #masterMessages.startFrameCapture #TODO: We do want the website UI to respond when the master kicks of the event!
             #masterMessages.resetSystem
             when picTakerMessages.register then sendClientMsg "picTakerHasRegisteredFC"
             when picTakerMessages.requestFrameOrder then sendClientMsg "picTakerHasOrderedFC", @data.payload
