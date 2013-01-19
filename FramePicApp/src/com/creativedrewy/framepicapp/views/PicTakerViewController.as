@@ -127,7 +127,7 @@ package com.creativedrewy.framepicapp.views
 			framePicBitmap.rotation = 90;
 			framePicBitmap.x = cameraViewport.width;
 			
-			var urlReq:URLRequest = new URLRequest("http://" + GlobalVars.SERVER_HOST + ":7373/fileUpload");
+			var urlReq:URLRequest = new URLRequest("http://" + GlobalVars.SERVER_HOST + ":" + GlobalVars.WEBSITE_PORT + "/fileUpload");
 			var urlVars:URLVariables = new URLVariables();
 			urlVars.info = JSON.stringify({frameNumber: _picFrameNumber});
 			urlReq.data = urlVars;
