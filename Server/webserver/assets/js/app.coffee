@@ -24,11 +24,13 @@ $ ->
 
         siteSocket.on 'update', (data) ->
             switch data.msg
-                when "registerMasterTEMP" then updateStatusField "Master registered. Next up: Pic Taker ordering."
-                when "initPicTakerOrderTEMP" then updateStatusField "Pic Taker ordering started. Master will tell you when to submit."
-                when "picTakerHasRegisteredTEMP" then do addPicTakerStatusBox
-                when "picTakerHasOrderedTEMP" then $(gridContainer.children("div").get(data.payload)).find("p").html("Ordered: " + data.payload)
-                when "picTakerIsReadyTEMP" then $(gridContainer.children("div").get(data.payload)).find("p").html(data.payload + ": Ready")
+                when "registerMasterFC" then updateStatusField "Master registered. Next up: Pic Taker ordering."
+                when "initPicTakerOrderFC" then updateStatusField "Pic Taker ordering started. Master will tell you when to submit."
+                when "picTakerHasRegisteredFC" then do addPicTakerStatusBox
+                when "picTakerHasOrderedFC" then $(gridContainer.children("div").get(data.payload)).find("p").html("Ordered: " + data.payload)
+                when "picTakerIsReadyFC" then $(gridContainer.children("div").get(data.payload)).find("p").html(data.payload + ": Ready")
+                when "picProcessingFC" then $(gridContainer.children("div").get(data.payload)).find("p").html(data.payload + ": Processing")
+                when "picProcessingCompleteFC" then $(gridContainer.children("div").get(data.payload)).html("<img src='/thumbs_temp/frame-thumb" + data.payload + ".jpg'>")
 
     ###
     Add a status box for a connected Pic Taker to the UI

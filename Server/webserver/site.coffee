@@ -6,10 +6,13 @@ require('zappajs') process.env.IP, 7373, ->
 
     @io.set 'log level', 1
 
+    fsLib = require("fs")
+    imageLib = require("imagemagick")
+    fsExtras = require('fs.extra')
+
     statusUpdateClientSocket = undefined
     freezeTimeSessionId = undefined
     sessionDirPath = undefined
-    fsLib = require("fs")
     systemMessagesJSON = JSON.decode(fsLib.readFileSync("./socketMessages.json", "utf8"))
     masterMessages = systemMessagesJSON.masterMessages
     picTakerMessages = systemMessagesJSON.picTakerMessages
@@ -22,17 +25,17 @@ require('zappajs') process.env.IP, 7373, ->
 
     @on 'systemMsg': ->
         switch @data.msg
-            when masterMessages.register then sendClientMsg "registerMasterTEMP"
+            when masterMessages.register then sendClientMsg "registerMasterFC"
             when masterMessages.initPicTakerOrder then do ->
                 freezeTimeSessionId = "FT3D-" + new Date().getTime()
                 sessionDirPath = "./sessions/" + freezeTimeSessionId
                 fsLib.mkdirSync sessionDirPath
-                sendClientMsg "initPicTakerOrderTEMP"
+                sendClientMsg "initPicTakerOrderFC"
             #masterMessages.startFrameCapture
             #masterMessages.resetSystem
-            when picTakerMessages.register then sendClientMsg "picTakerHasRegisteredTEMP"
-            when picTakerMessages.requestFrameOrder then sendClientMsg "picTakerHasOrderedTEMP", @data.payload
-            when picTakerMessages.picTakingReady then sendClientMsg "picTakerIsReadyTEMP", @data.payload
+            when picTakerMessages.register then sendClientMsg "picTakerHasRegisteredFC"
+            when picTakerMessages.requestFrameOrder then sendClientMsg "picTakerHasOrderedFC", @data.payload
+            when picTakerMessages.picTakingReady then sendClientMsg "picTakerIsReadyFC", @data.payload
 
     @view index: ->
 
@@ -41,11 +44,23 @@ require('zappajs') process.env.IP, 7373, ->
 
     @post '/fileUpload': ->
         uploadedFrameInfo = JSON.parse @request.query.info
+        sendClientMsg "picProcessingFC", uploadedFrameInfo.frameNumber
 
         fsLib.readFile @request.files.framePic.path, (err, data) ->
             saveImagePath = sessionDirPath + "/frame" + uploadedFrameInfo.frameNumber + ".jpg"
+            thumbImgName = "frame-thumb" + uploadedFrameInfo.frameNumber + ".jpg"
+            thumbImagePath = sessionDirPath + "/" + thumbImgName
+
             fsLib.writeFile saveImagePath, data, (err) ->
-                console.log "Frame " + uploadedFrameInfo.frameNumber + " successfully uploaded."
+                console.log "Frame " + uploadedFrameInfo.frameNumber + " successfully uploaded"
+                imageResizeOpts =
+                    srcPath: saveImagePath
+                    dstPath: thumbImagePath
+                    width: 177
+                    height: 100
+                imageLib.resize imageResizeOpts, (err, stdout, stderr) ->
+                    fsExtras.copy thumbImagePath, "./webserver/public/thumbs_temp/" + thumbImgName, (err) ->
+                        sendClientMsg "picProcessingCompleteFC", uploadedFrameInfo.frameNumber
 
     @view layout: ->
         doctype 5
