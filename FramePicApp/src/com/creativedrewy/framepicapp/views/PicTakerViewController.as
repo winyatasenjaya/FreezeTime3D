@@ -19,6 +19,7 @@ package com.creativedrewy.framepicapp.views
 	import flash.media.Video;
 	import flash.net.FileReference;
 	import flash.net.URLRequest;
+	import flash.net.URLVariables;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	
@@ -84,7 +85,7 @@ package com.creativedrewy.framepicapp.views
 		 */		
 		protected function onStep3ButtonClick(event:MouseEvent):void
 		{
-			//_picTakerModel.submitReady(_picFrameNumber);
+			_picTakerModel.submitReady(_picFrameNumber);
 			
 			mainButtonsContainer.visible = false;
 			var camera:Camera = Camera.getCamera();
@@ -101,11 +102,6 @@ package com.creativedrewy.framepicapp.views
 			_camVideoStream.x = cameraViewport.width;
 		}
 		
-		public function cameraViewport_clickHandler(event:MouseEvent):void
-		{
-			takeSaveCameraPic();
-		}
-		
 		/**
 		 * Take the actual frame picture and save it to the user's device
 		 */		
@@ -114,8 +110,7 @@ package com.creativedrewy.framepicapp.views
 			var bitmapData:BitmapData = new BitmapData(_camVideoStream.height, _camVideoStream.width);
 			bitmapData.draw(_camVideoStream);
 			
-			//_imageFile = File.documentsDirectory.resolvePath(_imageDirectory + _imgFileName);
-			_imageFile = new File("C:/Users/Andrew/Desktop/20120601_192134.jpg");
+			_imageFile = File.documentsDirectory.resolvePath(_imageDirectory + _imgFileName);
 			
 			var stream:FileStream = new FileStream();
 			stream.open(_imageFile, FileMode.WRITE);
@@ -132,7 +127,11 @@ package com.creativedrewy.framepicapp.views
 			framePicBitmap.rotation = 90;
 			framePicBitmap.x = cameraViewport.width;
 			
-			var urlReq:URLRequest = new URLRequest("http://localhost:7373/fileUpload");
+			var urlReq:URLRequest = new URLRequest("http://" + GlobalVars.SERVER_HOST + ":7373/fileUpload");
+			var urlVars:URLVariables = new URLVariables();
+			urlVars.info = JSON.stringify({frameNumber: _picFrameNumber});
+			urlReq.data = urlVars;
+			
 			_imageFile.upload(urlReq, "framePic");
 		}
 		

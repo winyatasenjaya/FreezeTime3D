@@ -4,6 +4,8 @@ require('zappajs') process.env.IP, 7373, ->
     @use require('connect-assets')
         src: './webserver/assets'
 
+    @io.set 'log level', 1
+
     statusUpdateClientSocket = undefined
     freezeTimeSessionId = undefined
     sessionDirPath = undefined
@@ -38,38 +40,12 @@ require('zappajs') process.env.IP, 7373, ->
         @render 'index'
 
     @post '/fileUpload': ->
-        console.log @request.files.framePic
+        uploadedFrameInfo = JSON.parse @request.query.info
 
-#        { size: 28406,
-#          path: 'C:\\Users\\Andrew\\AppData\\Local\\Temp\\898df8885d666ce9dcff464ff8afb6
-#        10',
-#          name: '20120601_192134.jpg',
-#          type: 'application/octet-stream',
-#          hash: false,
-#          lastModifiedDate: Wed Jan 02 2013 19:49:21 GMT-0600 (Central Standard Time),
-#          _writeStream:
-#           { path: 'C:\\Users\\Andrew\\AppData\\Local\\Temp\\898df8885d666ce9dcff464ff8a
-#        fb610',
-#             fd: 3,
-#             writable: false,
-#             flags: 'w',
-#             encoding: 'binary',
-#             mode: 438,
-#             bytesWritten: 28406,
-#             busy: false,
-#             _queue: [],
-#             _open: [Function],
-#             drainable: true },
-#          length: [Getter],
-#          filename: [Getter],
-#          mime: [Getter] }
-
-        #fs.readFile(req.files.displayImage.path, function (err, data) {
-        #    var newPath = __dirname + "/uploads/uploadedFileName";
-        #        fs.writeFile(newPath, data, function (err) {
-        #        res.redirect("back");
-        #    });
-        #});
+        fsLib.readFile @request.files.framePic.path, (err, data) ->
+            saveImagePath = sessionDirPath + "/frame" + uploadedFrameInfo.frameNumber + ".jpg"
+            fsLib.writeFile saveImagePath, data, (err) ->
+                console.log "Frame " + uploadedFrameInfo.frameNumber + " successfully uploaded."
 
     @view layout: ->
         doctype 5

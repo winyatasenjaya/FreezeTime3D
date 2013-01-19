@@ -36,5 +36,5 @@
 		</components:SetupUIRegionBox>
 	</s:VGroup>
 	
-	<mx:UIComponent id="cameraViewport" width="100%" height="100%" visible="false" click="cameraViewport_clickHandler(event)" />
+	<mx:UIComponent id="cameraViewport" width="100%" height="100%" visible="false" />
 </views:PicTakerViewController>

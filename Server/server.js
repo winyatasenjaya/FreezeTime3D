@@ -13,5 +13,3 @@ var socketHost = process.env.IP;
 var socketPort = 7474;
 var socketController = new ControllerModule.MobileAppsSocketController(net, socketHost, socketPort, websiteMessagingSocket);
 socketController.startup();
-
-//adl bin-debug\FramePicApp-app.xml -profile mobileDevice
