@@ -26,7 +26,10 @@ package com.creativedrewy.framepicapp.views
 	import mx.core.UIComponent;
 	import mx.graphics.codec.JPEGEncoder;
 	
+	import spark.components.BorderContainer;
 	import spark.components.Button;
+	import spark.components.Label;
+	import spark.components.SkinnableContainer;
 	import spark.components.TextInput;
 	import spark.components.VGroup;
 	import spark.components.View;
@@ -44,6 +47,12 @@ package com.creativedrewy.framepicapp.views
 		[Bindable] public var step3Container:SetupUIRegionBox;
 		[Bindable] public var step3ReadyButton:Button;
 		[Bindable] public var cameraViewport:UIComponent;
+		[Bindable] public var framePicStuffContainer:SkinnableContainer;
+		[Bindable] public var shotHelperBox:BorderContainer;
+		[Bindable] public var postPicTakingBox:BorderContainer;
+		[Bindable] public var postPicStatusLabel:Label;
+		[Bindable] public var doneButton:Button;
+		//[Bindable] public var <next pic button?>
 		
 		private var _picTakerModel:PicTakerModel;
 		private var _picFrameNumber:int = -1;
@@ -88,6 +97,8 @@ package com.creativedrewy.framepicapp.views
 			_picTakerModel.submitReady(_picFrameNumber);
 			
 			mainButtonsContainer.visible = false;
+			framePicStuffContainer.visible = true;
+			
 			var camera:Camera = Camera.getCamera();
 			
 			_camVideoStream = new Video(800, 480);
@@ -110,13 +121,17 @@ package com.creativedrewy.framepicapp.views
 			var bitmapData:BitmapData = new BitmapData(_camVideoStream.height, _camVideoStream.width);
 			bitmapData.draw(_camVideoStream);
 			
+			shotHelperBox.visible = false;
+			postPicTakingBox.visible = true;
+			//TODO: The visual updates don't show fast enough; need to have rest of processing on a slight delay?
+			
 			_imageFile = File.documentsDirectory.resolvePath(_imageDirectory + _imgFileName);
 			
 			var stream:FileStream = new FileStream();
 			stream.open(_imageFile, FileMode.WRITE);
 			
 			var encoder:JPEGEncoder = new JPEGEncoder();
-			var byteArray:ByteArray = encoder.encode(bitmapData);   
+			var byteArray:ByteArray = encoder.encode(bitmapData);  
 			stream.writeBytes(byteArray, 0, byteArray.bytesAvailable);
 			stream.close();
 			
@@ -127,6 +142,8 @@ package com.creativedrewy.framepicapp.views
 			framePicBitmap.rotation = 90;
 			framePicBitmap.x = cameraViewport.width;
 			
+			//TODO: Need to refactor into relevant model class, also wire up event handling for delay
+			//TODO: Done button, possibly a way to go back for next freeze time?
 			var urlReq:URLRequest = new URLRequest("http://" + GlobalVars.SERVER_HOST + ":" + GlobalVars.WEBSITE_PORT + "/fileUpload");
 			var urlVars:URLVariables = new URLVariables();
 			urlVars.info = JSON.stringify({frameNumber: _picFrameNumber});

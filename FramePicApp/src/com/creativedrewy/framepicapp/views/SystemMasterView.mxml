@@ -12,11 +12,11 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup width="100%" height="100%">
+	<s:VGroup width="100%" height="100%" gap="10" paddingTop="5" paddingRight="5" paddingBottom="5" paddingLeft="5">
 		<s:HGroup width="100%" height="100%">
 			<components:SetupUIRegionBox width="50%" height="100%">
 				<s:VGroup width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
-					<s:TextInput id="hostAddressTextInput" width="80%" text="{GlobalVars.SERVER_HOST}" />
+					<s:TextInput id="hostAddressTextInput" width="80%" text="{GlobalVars.SERVER_HOST}" skinClass="spark.skins.mobile.TextInputSkin" />
 					<s:Button label="Register" width="80%" id="step1RegisterButton" click="step1ButtonClick(event)" />
 				</s:VGroup>
 			</components:SetupUIRegionBox>
