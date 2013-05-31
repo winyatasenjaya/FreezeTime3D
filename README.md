@@ -1,3 +1,23 @@
 # Freeze Time 3D
 
-Information on the project is pending. Lots of good info to come!
+FreezeTime3D is a way for you and a bunch of your friends to easily create the "bullet time" effect from The Matrix that you know so well.
+
+## What you'll need
+
+- A computer running nodejs that will act as the main controlling server. A Raspberry Pi is an ideal small, portable server. There is a pre-configured image available. More on that later.
+- Any number of iOS and Android devices with rear-facing cameras. I'd recommend at least 24. Yes, you'll need a **bunch** of friends.
+
+## How it works
+
+The "bullet time" effect is acheived by lining up a bunch of still cameras - usually pointing at the same thing - and having them fire at or very close to the same time when some event takes place. By splicing all the frames together, you create the effect of moving the camera through 3d space while time is frozen.
+
+Most people don't have access to multiple still/video cameras to create this setup, let alone figuring out a way to get them all to fire at the same time. But what I realized is that many people these days are carrying around smartphones with very good cameras on them. If a number of people could get together with their smartphones and have a way to get all the cameras to go off at the same time, you'd have the effect.
+
+Hence, FreezeTime3D was born. It consists of two main programs: the nodejs controlling server and a mobile app that can be run on either iOS or Android. At a high level, this is what the components do:
+
+- The server acts as a socket server for all of the mobile devices to coordinate the pic-taking, as well as providing a small website to see the status of everthing going on.
+- The mobile app is run on every smartphone and each device connects to the socket server. The actual pic-taking is controlled by one device that acts as the "Master," while all the other instances of the running mo bile app act as picture takers in an ordered fashion.
+
+## The name
+
+"Bullet time" is a registered trademark of Warner Bros., so a different name was needed. FreezeTime3D seems to capture things well.
