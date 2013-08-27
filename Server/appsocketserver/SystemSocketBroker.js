@@ -120,10 +120,11 @@ module.exports.SystemSocketBroker = new Class({
      * Send a message to a socket-connected app instance. Able to send message string and payload data.
      */
     sendAppSocketMessage: function(destSocket, messageString, payloadData) {
-        destSocket.write(JSON.encode({
-            msg: messageString,
-            payload: payloadData
-        }));
+        //TODO: Need to rewrite this to use Socket IO's methodology for data transport, and that's it!
+//        destSocket.write(JSON.encode({
+//            msg: messageString,
+//            payload: payloadData
+//        }));
     }
 
 });

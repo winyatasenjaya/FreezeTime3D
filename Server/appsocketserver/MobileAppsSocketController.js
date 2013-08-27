@@ -29,26 +29,6 @@ module.exports.MobileAppsSocketController = new Class({
         this.host = hostName;
         this.port = hostPort;
 
-//        this.socketServer = netLib.createServer(function(socket) {
-//            socket.setEncoding('utf8');
-//
-//            socket.on(SocketEvents.CONNECT, this.onSocketConnect.bind(this, socket));
-//            socket.on(SocketEvents.DATA, this.onSocketData.bind(this, socket));
-//            socket.on(SocketEvents.END, this.onSocketEnd.bind(this, socket));
-//        }.bind(this));
-
-        var io = require('socket.io').listen(hostPort);
-
-        io.sockets.on('connection', function (socket) {
-//            socket.emit('news', { hello: 'world' });
-//
-//            socket.on('my other event', function (data) {
-//                console.log(data);
-//            });
-
-            console.log("We have a new connection woot!")
-        });
-
         this.socketBroker = new (require("./SystemSocketBroker")).SystemSocketBroker(websiteMessagingSocket);
     },
 
@@ -60,27 +40,33 @@ module.exports.MobileAppsSocketController = new Class({
             this.policyContents = fileData;
             //this.socketServer.listen(this.port, this.host);
 
+            var io = require('socket.io').listen(this.port);
+
+            io.sockets.on('connection', function (socket) {
+
+                socket.on('AppDataEmitEvent', function (data) {
+                    this.onSocketData(socket, data);
+                }.bind(this));
+
+                console.log("Socket connection established with device at " + socket.handshake.address.address + "");
+            }.bind(this));
+
             console.log("FreezeTime3D socket server has been started on port " + this.port + "");
         }.bind(this));
-    },
-
-    /**
-     * Initial connection from a mobile device
-     */
-    onSocketConnect: function(socket) {
-        console.log("Socket connection established with device at " + socket.remoteAddress + "");
     },
 
     /**
      * Initial function to process socket data sent from the mobile apps
      */
     onSocketData: function(socket, data) {
-        if (data == this.policyRequestString) {
-            socket.write(this.policyContents + "\0");
-        } else {
-            var sentJSON = JSON.decode(data);
-            this.socketBroker.processSystemMessages(sentJSON, socket);
-        }
+        //if (data == this.policyRequestString) {
+        //    socket.write(this.policyContents + "\0");
+        //} else {
+            //var sentJSON = JSON.decode(data);
+
+            //TODO: socket.remoteAddres = socket.handshake.address.address
+            this.socketBroker.processSystemMessages(data, socket);
+        //}
     },
 
     onSocketEnd: function(socket) {

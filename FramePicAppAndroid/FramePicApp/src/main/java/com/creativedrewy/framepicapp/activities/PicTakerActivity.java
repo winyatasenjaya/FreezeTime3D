@@ -16,6 +16,7 @@ public class PicTakerActivity extends Activity {
     private Button _submitPicOrderButton;
     private Button _picReadyButton;
     private EditText _serverAddrEditText;
+    private PicTakerModel _picTakerModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class PicTakerActivity extends Activity {
                 //TODO: Only enable when appropriate
                 _submitPicOrderButton.setEnabled(true);
 
-                PicTakerModel testModel = new PicTakerModel();
+                _picTakerModel = new PicTakerModel();
             }
         });
 
@@ -42,13 +43,15 @@ public class PicTakerActivity extends Activity {
             public void onClick(View view) {
                 //TODO: Only enable when appropriate
                 _picReadyButton.setEnabled(true);
+
+                _picTakerModel.submitOrder();
             }
         });
 
         _picReadyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                _picTakerModel.submitReady(0);  //TODO: Submit actual order number here
             }
         });
     }
