@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FramePicApp</string>
+    <string name="start_master_lalbel">Start Master</string>
+    <string name="start_pictaker_label">Start PicTaker</string>
+    <string name="title_activity_system_master">FT3D Master</string>
+
+</resources>
