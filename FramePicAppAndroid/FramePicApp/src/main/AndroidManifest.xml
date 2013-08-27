@@ -14,19 +14,23 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activities.StartActivity"
+            android:name="com.creativedrewy.framepicapp.activities.StartActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.SystemMasterActivity"
+            android:name="com.creativedrewy.framepicapp.activities.SystemMasterActivity"
             android:label="@string/title_activity_system_master"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.PicTakerActivity"
+            android:label="@string/title_activity_pic_taker"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

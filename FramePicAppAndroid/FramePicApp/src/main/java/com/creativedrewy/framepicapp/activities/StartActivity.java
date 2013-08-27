@@ -31,7 +31,7 @@ public class StartActivity extends Activity {
         _startPicTakerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(StartActivity.this, PicTakerActivity.class));
             }
         });
     }
