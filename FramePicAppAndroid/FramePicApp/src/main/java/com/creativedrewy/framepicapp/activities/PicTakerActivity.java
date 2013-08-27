@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.creativedrewy.framepicapp.R;
+import com.creativedrewy.framepicapp.model.PicTakerModel;
+import com.koushikdutta.async.http.AsyncHttpClient;
 
 public class PicTakerActivity extends Activity {
     private Button _picRegisterButton;
@@ -30,6 +32,8 @@ public class PicTakerActivity extends Activity {
             public void onClick(View view) {
                 //TODO: Only enable when appropriate
                 _submitPicOrderButton.setEnabled(true);
+
+                PicTakerModel testModel = new PicTakerModel();
             }
         });
 

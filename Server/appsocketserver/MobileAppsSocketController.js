@@ -29,13 +29,25 @@ module.exports.MobileAppsSocketController = new Class({
         this.host = hostName;
         this.port = hostPort;
 
-        this.socketServer = netLib.createServer(function(socket) {
-            socket.setEncoding('utf8');
+//        this.socketServer = netLib.createServer(function(socket) {
+//            socket.setEncoding('utf8');
+//
+//            socket.on(SocketEvents.CONNECT, this.onSocketConnect.bind(this, socket));
+//            socket.on(SocketEvents.DATA, this.onSocketData.bind(this, socket));
+//            socket.on(SocketEvents.END, this.onSocketEnd.bind(this, socket));
+//        }.bind(this));
 
-            socket.on(SocketEvents.CONNECT, this.onSocketConnect.bind(this, socket));
-            socket.on(SocketEvents.DATA, this.onSocketData.bind(this, socket));
-            socket.on(SocketEvents.END, this.onSocketEnd.bind(this, socket));
-        }.bind(this));
+        var io = require('socket.io').listen(hostPort);
+
+        io.sockets.on('connection', function (socket) {
+//            socket.emit('news', { hello: 'world' });
+//
+//            socket.on('my other event', function (data) {
+//                console.log(data);
+//            });
+
+            console.log("We have a new connection woot!")
+        });
 
         this.socketBroker = new (require("./SystemSocketBroker")).SystemSocketBroker(websiteMessagingSocket);
     },
@@ -46,7 +58,7 @@ module.exports.MobileAppsSocketController = new Class({
     startup: function() {
         require("fs").readFile(this.policyFilePath, "utf8", function(error, fileData) {
             this.policyContents = fileData;
-            this.socketServer.listen(this.port, this.host);
+            //this.socketServer.listen(this.port, this.host);
 
             console.log("FreezeTime3D socket server has been started on port " + this.port + "");
         }.bind(this));
@@ -73,7 +85,7 @@ module.exports.MobileAppsSocketController = new Class({
 
     onSocketEnd: function(socket) {
         //TODO: Not seeing much in the way of unique IDs for socket at this point...don't know how to
-        //remove from global collection, update website, and so on
+        //TODO: remove from global collection, update website, and so on
         console.log("Socket connection ended with a device");
     }
 
