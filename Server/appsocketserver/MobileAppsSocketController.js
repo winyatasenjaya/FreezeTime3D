@@ -64,7 +64,7 @@ module.exports.MobileAppsSocketController = new Class({
         //} else {
             //var sentJSON = JSON.decode(data);
 
-            //TODO: socket.remoteAddres = socket.handshake.address.address
+            socket.remoteAddress = socket.handshake.address.address;
             this.socketBroker.processSystemMessages(data, socket);
         //}
     },

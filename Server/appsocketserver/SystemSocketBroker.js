@@ -31,6 +31,7 @@ module.exports.SystemSocketBroker = new Class({
         if (data.role == this.socketMessages.masterId) {
             this.processMasterMessages(socket, data.message);
         } else if (data.role == this.socketMessages.picTakerId) {
+            console.log("--- GOT HERE ---");
             this.processPicTakerMessages(socket, data.message, data.payload);
         }
     },
@@ -86,7 +87,7 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.picTakerMessages.register:
                 this.picSockets[socket.remoteAddress] = socket;
                 this.sendAppSocketMessage(socket, this.socketMessages.picTakerMessages.registerResponse);
-                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register});
+                //this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register});
 
                 console.log("PicTaker has registered at address " + socket.remoteAddress);
                 break;
@@ -120,11 +121,7 @@ module.exports.SystemSocketBroker = new Class({
      * Send a message to a socket-connected app instance. Able to send message string and payload data.
      */
     sendAppSocketMessage: function(destSocket, messageString, payloadData) {
-        //TODO: Need to rewrite this to use Socket IO's methodology for data transport, and that's it!
-//        destSocket.write(JSON.encode({
-//            msg: messageString,
-//            payload: payloadData
-//        }));
+        destSocket.emit("ServerDataEmitEvent", {msg: messageString, payload: payloadData});
     }
 
 });

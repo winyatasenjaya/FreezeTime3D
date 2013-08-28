@@ -13,31 +13,27 @@ import org.json.JSONObject;
 /**
  *
  */
-public class PicTakerModel {
-    private SocketIOClient _globalSocketIOClient;
+public class PicTakerModel extends ModelBase {
 
-    public PicTakerModel() {
+    /**
+     *
+     * @param ipAddress
+     * @param handler
+     */
+    public PicTakerModel(String ipAddress, IServerMessageHandler handler) {
+        super(ipAddress, handler);
 
-        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), "http://192.168.10.162:7474", new ConnectCallback() {
-            @Override
-            public void onConnectCompleted(Exception e, SocketIOClient socketIOClient) {
-                //_globalSocketIOClient = socketIOClient;
+        _roleString = "picTaker";
+        _registerMessage = "RegisterPicTaker";
 
-                socketIOClient.addListener("ServerDataEmitEvent", new EventCallback() {
-                    @Override
-                    public void onEvent(JSONArray jsonArray, Acknowledge acknowledge) {
-
-                    }
-                });
-            }
-        });
+        initConnection();
     }
 
     /**
      *
      */
     public void submitOrder() {
-        //_globalSocketIOClient.emit("AppDataEmitEvent", {role: "picTakerRole", message: "RequestingFrameOrder", payload: ""});
+        sendAppDataEmit("RequestingFrameOrder");
     }
 
     /**
@@ -45,7 +41,7 @@ public class PicTakerModel {
      * @param frameNumber
      */
     public void submitReady(int frameNumber) {
-        //_globalSocketIOClient.emit("AppDataEmitEvent", {role: "picTakerRole", message: "PicTakingReady", payload: frameNumber});
+        sendAppDataEmit("PicTakingReady", String.valueOf(frameNumber));
     }
 
 }
