@@ -1,5 +1,6 @@
 package com.creativedrewy.framepicapp.model;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.koushikdutta.async.http.AsyncHttpClient;
@@ -16,17 +17,18 @@ import org.json.JSONObject;
  */
 public class ModelBase {
     protected SocketIOClient _globalSocketIOClient;
-    protected IServerMessageHandler _messageHandler;
+    protected Activity _handlerActivity;
     protected String _roleString;   //Derived classes will need to specify a unique role string
     protected String _registerMessage;
+    protected JSONObject _serverReturnJSON = null;
 
     /**
      * Constructor
      * @param ipAddress IP address to FT3D socket server
-     * @param handler Class that will work with data coming back from the server
+     * @param handlerActivity We have to pass in an activity so that we can broker thread stuff to UI
      */
-    public ModelBase(String ipAddress, IServerMessageHandler handler){
-        _messageHandler = handler;
+    public ModelBase(String ipAddress, Activity handlerActivity){
+        _handlerActivity = handlerActivity;
     }
 
     /**
@@ -41,10 +43,16 @@ public class ModelBase {
                 socketIOClient.on("ServerDataEmitEvent", new EventCallback() {
                     @Override
                     public void onEvent(JSONArray jsonArray, Acknowledge acknowledge) {
-                        JSONObject outObj = jsonArray.optJSONObject(0);
+                        _serverReturnJSON = jsonArray.optJSONObject(0);
 
-                        if (outObj != null) {
-                            _messageHandler.handleServerMessage(outObj.optString("msg"), "");
+                        if (_serverReturnJSON != null) {
+                            _handlerActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //We also know that all passed in activities will implement the interface
+                                    ((IServerMessageHandler) _handlerActivity).handleServerMessage(_serverReturnJSON.optString("msg"), _serverReturnJSON.optString("payload"));
+                                }
+                            });
                         }
                     }
                 });

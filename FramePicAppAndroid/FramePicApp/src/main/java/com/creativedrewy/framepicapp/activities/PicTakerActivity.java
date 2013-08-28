@@ -21,6 +21,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     private Button _picReadyButton;
     private EditText _serverAddrEditText;
     private PicTakerModel _picTakerModel;
+    private int _picFrameNumber = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,9 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         _picReadyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //_picTakerModel.submitReady(0);  //TODO: Submit actual order number here
+                _picTakerModel.submitReady(_picFrameNumber);
+
+                //TODO: This is where we turn the camera viewport for pic taking
             }
         });
     }
@@ -68,14 +71,13 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
             _submitPicOrderButton.setEnabled(true);
             _submitPicOrderButton.setText("Submit Order");
         } else if (message.equals("FrameOrderResponse")) {
-//            _picFrameNumber = parseInt(event.messagePayload);
-//            step3Container.enabled = true;
-//
-//            step2OrderButton.label = "Frame Number: " + _picFrameNumber;
-//            step2OrderButton.enabled = false;
-//
+            _picFrameNumber = Integer.valueOf(payload);
+            _picReadyButton.setEnabled(true);
+
+            _submitPicOrderButton.setText("Frame Number: " + _picFrameNumber);
+            _submitPicOrderButton.setEnabled(false);
+
 //            var now:Date = new Date();
-//
 //            _imgFileName = "frame_" + _picFrameNumber + "_" + now.time + ".jpg";
         } else if (message.equals("TakeFramePic")) {
             //takeSaveCameraPic();

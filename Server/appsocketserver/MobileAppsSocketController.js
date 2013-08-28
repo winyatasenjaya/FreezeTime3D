@@ -38,10 +38,8 @@ module.exports.MobileAppsSocketController = new Class({
     startup: function() {
         require("fs").readFile(this.policyFilePath, "utf8", function(error, fileData) {
             this.policyContents = fileData;
-            //this.socketServer.listen(this.port, this.host);
 
             var io = require('socket.io').listen(this.port);
-
             io.sockets.on('connection', function (socket) {
 
                 socket.on('AppDataEmitEvent', function (data) {
@@ -59,14 +57,8 @@ module.exports.MobileAppsSocketController = new Class({
      * Initial function to process socket data sent from the mobile apps
      */
     onSocketData: function(socket, data) {
-        //if (data == this.policyRequestString) {
-        //    socket.write(this.policyContents + "\0");
-        //} else {
-            //var sentJSON = JSON.decode(data);
-
-            socket.remoteAddress = socket.handshake.address.address;
-            this.socketBroker.processSystemMessages(data, socket);
-        //}
+        socket.remoteAddress = socket.handshake.address.address;
+        this.socketBroker.processSystemMessages(data, socket);
     },
 
     onSocketEnd: function(socket) {

@@ -31,7 +31,6 @@ module.exports.SystemSocketBroker = new Class({
         if (data.role == this.socketMessages.masterId) {
             this.processMasterMessages(socket, data.message);
         } else if (data.role == this.socketMessages.picTakerId) {
-            console.log("--- GOT HERE ---");
             this.processPicTakerMessages(socket, data.message, data.payload);
         }
     },
@@ -87,7 +86,7 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.picTakerMessages.register:
                 this.picSockets[socket.remoteAddress] = socket;
                 this.sendAppSocketMessage(socket, this.socketMessages.picTakerMessages.registerResponse);
-                //this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register});
+                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register});
 
                 console.log("PicTaker has registered at address " + socket.remoteAddress);
                 break;

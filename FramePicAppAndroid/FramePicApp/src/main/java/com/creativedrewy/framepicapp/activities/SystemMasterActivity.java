@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.creativedrewy.framepicapp.R;
 import com.creativedrewy.framepicapp.model.IServerMessageHandler;
+import com.creativedrewy.framepicapp.model.SystemMasterModel;
 
 /**
  * Activity/view for the app that will act as the FT3D master
@@ -22,6 +23,9 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
     private EditText _serverAddrEditText;
     private TextView _devicesReadyLabel;
     private TextView _devicesOrderedLabel;
+    private SystemMasterModel _masterModel;
+    private int _orderedDevices = 0;
+    private int _readyDevices = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,32 +44,28 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
         _masterRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: These only are enabled if connections are successfully made, of course
-                _resetSystemButton.setEnabled(true);
-                _initOrderingButton.setEnabled(true);
+                _masterModel = new SystemMasterModel("IPADDRESS", SystemMasterActivity.this);
             }
         });
 
         _initOrderingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Only enable if ordering is successfully started
-                _freezeTimeButton.setEnabled(true);
-                _devicesOrderedLabel.setText("10 devices ordered");
+                _masterModel.sendInitOrder();
             }
         });
 
         _freezeTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _devicesReadyLabel.setText("20 devices ready");
+                _masterModel.sendFreezeTime();
             }
         });
 
         _resetSystemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                _masterModel.sendResetSystem();
             }
         });
     }
@@ -75,6 +75,24 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
      */
     @Override
     public void handleServerMessage(String message, String payload) {
+        if (message.equals("RegisterMasterResponse")) {
+            _masterRegisterButton.setEnabled(false);
+            _masterRegisterButton.setText("Is master");
 
+            _resetSystemButton.setEnabled(true);
+            _initOrderingButton.setEnabled(true);
+        } else if (message.equals("PicTakerOrderUpdate")) {
+            _orderedDevices++;
+            _devicesOrderedLabel.setText(_orderedDevices + " device(s) ordered");
+        } else if (message.equals("PicTakerFrameReadyUpdate")) {
+            _readyDevices++;
+            _devicesReadyLabel.setText(_readyDevices + " device(s) ready");
+
+            if (_readyDevices == _orderedDevices) {
+                _freezeTimeButton.setEnabled(true);
+            } else {
+                _freezeTimeButton.setEnabled(false);
+            }
+        } //TODO: Add handling of reset finished message
     }
 }

@@ -1,5 +1,7 @@
 package com.creativedrewy.framepicapp.model;
 
+import android.app.Activity;
+
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
@@ -18,8 +20,8 @@ public class PicTakerModel extends ModelBase {
     /**
      * Constructor
      */
-    public PicTakerModel(String ipAddress, IServerMessageHandler handler) {
-        super(ipAddress, handler);
+    public PicTakerModel(String ipAddress, Activity handlerActivity) {
+        super(ipAddress, handlerActivity);
 
         _roleString = "picTaker";
         _registerMessage = "RegisterPicTaker";
