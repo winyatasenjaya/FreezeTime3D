@@ -13,7 +13,7 @@ import com.creativedrewy.framepicapp.model.PicTakerModel;
 import com.koushikdutta.async.http.AsyncHttpClient;
 
 /**
- *
+ * Activity/view for apps that will operate as PicTakers
  */
 public class PicTakerActivity extends Activity implements IServerMessageHandler {
     private Button _picRegisterButton;
@@ -55,9 +55,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     }
 
     /**
-     *
-     * @param message
-     * @param payload
+     * Handle message/payload data from the FT3D server; implemented from the interface
      */
     @Override
     public void handleServerMessage(String message, String payload) {
