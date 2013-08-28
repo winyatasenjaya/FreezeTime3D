@@ -12,25 +12,25 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- *
+ * Functionality related to all models in the application; provides uniform server interaction
  */
 public class ModelBase {
     protected SocketIOClient _globalSocketIOClient;
     protected IServerMessageHandler _messageHandler;
-    protected String _roleString;
+    protected String _roleString;   //Derived classes will need to specify a unique role string
     protected String _registerMessage;
 
     /**
-     *
-     * @param ipAddress
-     * @param handler
+     * Constructor
+     * @param ipAddress IP address to FT3D socket server
+     * @param handler Class that will work with data coming back from the server
      */
     public ModelBase(String ipAddress, IServerMessageHandler handler){
         _messageHandler = handler;
     }
 
     /**
-     *
+     * Startup the connection to the FT3D socket server
      */
     public void initConnection() {
         SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), "http://192.168.10.162:7474", new ConnectCallback() {
@@ -44,7 +44,6 @@ public class ModelBase {
                         JSONObject outObj = jsonArray.optJSONObject(0);
 
                         if (outObj != null) {
-                            //TODO: Make this actually deal with the data from the server
                             _messageHandler.handleServerMessage(outObj.optString("msg"), "");
                         }
                     }
@@ -56,9 +55,9 @@ public class ModelBase {
     }
 
     /**
-     *
-     * @param message
-     * @param payload
+     * Send data to the socket server via a socket.io "emit" call
+     * @param message Message data to send to the server
+     * @param payload Any relevant payload data
      */
     public void sendAppDataEmit(String message, String payload) {
         JSONObject messageData = new JSONObject();
@@ -75,7 +74,7 @@ public class ModelBase {
     }
 
     /**
-     *
+     * Overloaded method to just specify message data
      * @param message
      */
     public void sendAppDataEmit(String message) {

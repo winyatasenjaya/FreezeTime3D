@@ -9,6 +9,9 @@ import android.widget.Button;
 
 import com.creativedrewy.framepicapp.R;
 
+/**
+ * Initial activity for the whole application
+ */
 public class StartActivity extends Activity {
     private Button _startMasterButton;
     private Button _startPicTakerButton;

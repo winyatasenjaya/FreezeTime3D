@@ -9,8 +9,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.creativedrewy.framepicapp.R;
+import com.creativedrewy.framepicapp.model.IServerMessageHandler;
 
-public class SystemMasterActivity extends Activity {
+/**
+ * Activity/view for the app that will act as the FT3D master
+ */
+public class SystemMasterActivity extends Activity implements IServerMessageHandler {
     private Button _masterRegisterButton;
     private Button _initOrderingButton;
     private Button _freezeTimeButton;
@@ -66,4 +70,11 @@ public class SystemMasterActivity extends Activity {
         });
     }
 
+    /**
+     * Handle message/payload data from the FT3D server; implemented from the interface
+     */
+    @Override
+    public void handleServerMessage(String message, String payload) {
+
+    }
 }

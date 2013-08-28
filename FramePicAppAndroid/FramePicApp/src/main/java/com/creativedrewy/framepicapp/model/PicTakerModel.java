@@ -11,14 +11,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- *
+ * Model class for the PicTaker functionality
  */
 public class PicTakerModel extends ModelBase {
 
     /**
-     *
-     * @param ipAddress
-     * @param handler
+     * Constructor
      */
     public PicTakerModel(String ipAddress, IServerMessageHandler handler) {
         super(ipAddress, handler);
@@ -30,15 +28,15 @@ public class PicTakerModel extends ModelBase {
     }
 
     /**
-     *
+     * Send the message to the server that this app instance should be put in frame order
      */
     public void submitOrder() {
         sendAppDataEmit("RequestingFrameOrder");
     }
 
     /**
-     *
-     * @param frameNumber
+     * Send the message to the server that this app instance is ready to take its framepic
+     * @param frameNumber This app's frame number
      */
     public void submitReady(int frameNumber) {
         sendAppDataEmit("PicTakingReady", String.valueOf(frameNumber));
