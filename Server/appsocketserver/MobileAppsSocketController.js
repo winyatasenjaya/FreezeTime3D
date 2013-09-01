@@ -40,6 +40,7 @@ module.exports.MobileAppsSocketController = new Class({
             this.policyContents = fileData;
 
             var io = require('socket.io').listen(this.port);
+            io.set('log level', 1);
             io.sockets.on('connection', function (socket) {
 
                 socket.on('AppDataEmitEvent', function (data) {

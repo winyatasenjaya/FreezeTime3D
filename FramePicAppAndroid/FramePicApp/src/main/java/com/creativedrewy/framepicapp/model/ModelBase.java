@@ -35,7 +35,7 @@ public class ModelBase {
      * Startup the connection to the FT3D socket server
      */
     public void initConnection() {
-        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), "http://192.168.10.162:7474", new ConnectCallback() {
+        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), "http://192.168.10.170:7474", new ConnectCallback() {
             @Override
             public void onConnectCompleted(Exception e, SocketIOClient socketIOClient) {
                 _globalSocketIOClient = socketIOClient;

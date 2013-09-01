@@ -18,7 +18,10 @@ require('zappajs') process.env.IP, 7373, ->
     picTakerMessages = systemMessagesJSON.picTakerMessages
 
     sendClientMsg = (msgString, payloadData) ->
-        statusUpdateClientSocket.emit 'update', {msg: msgString, payload: payloadData}
+        try
+            statusUpdateClientSocket.emit 'update', {msg: msgString, payload: payloadData}
+        catch error
+            console.log 'Status website has not been opened in any browser yet.'
 
     @on 'idClientConnection': ->
         statusUpdateClientSocket = @socket
@@ -58,9 +61,9 @@ require('zappajs') process.env.IP, 7373, ->
                     dstPath: thumbImagePath
                     width: 177
                     height: 100
-                imageLib.resize imageResizeOpts, (err, stdout, stderr) ->
-                    fsExtras.copy thumbImagePath, "./webserver/public/thumbs_temp/" + thumbImgName, (err) ->
-                        sendClientMsg "picProcessingCompleteFC", uploadedFrameInfo.frameNumber
+                #imageLib.resize imageResizeOpts, (err, stdout, stderr) ->
+                #    fsExtras.copy thumbImagePath, "./webserver/public/thumbs_temp/" + thumbImgName, (err) ->
+                #        sendClientMsg "picProcessingCompleteFC", uploadedFrameInfo.frameNumber
 
     @view layout: ->
         doctype 5
