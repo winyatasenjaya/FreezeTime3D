@@ -18,10 +18,8 @@ require('zappajs') process.env.IP, 7373, ->
     picTakerMessages = systemMessagesJSON.picTakerMessages
 
     sendClientMsg = (msgString, payloadData) ->
-        try
+        if statusUpdateClientSocket
             statusUpdateClientSocket.emit 'update', {msg: msgString, payload: payloadData}
-        catch error
-            console.log 'Status website has not been opened in any browser yet.'
 
     @on 'idClientConnection': ->
         statusUpdateClientSocket = @socket
@@ -46,6 +44,7 @@ require('zappajs') process.env.IP, 7373, ->
         @render 'index'
 
     @post '/fileUpload': ->
+        console.log '--- Yes we got here!!!! ---'
         uploadedFrameInfo = JSON.parse @request.query.info
         sendClientMsg "picProcessingFC", uploadedFrameInfo.frameNumber
 
