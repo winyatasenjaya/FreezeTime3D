@@ -16,6 +16,7 @@ import org.json.JSONObject;
  * Model class for the PicTaker functionality
  */
 public class PicTakerModel extends ModelBase {
+    public final static String PICTAKER_HOST_IP_PREF = "pictakerHostIPPref";
 
     /**
      * Constructor

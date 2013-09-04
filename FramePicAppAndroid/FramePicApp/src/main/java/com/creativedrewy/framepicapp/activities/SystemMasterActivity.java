@@ -1,9 +1,11 @@
 package com.creativedrewy.framepicapp.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
     private SystemMasterModel _masterModel;
     private int _orderedDevices = 0;
     private int _readyDevices = 0;
+    private SharedPreferences _appPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,16 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
         _masterRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _masterModel = new SystemMasterModel("IPADDRESS", SystemMasterActivity.this);
+                String ipAddr = _serverAddrEditText.getText().toString();
+
+                SharedPreferences.Editor editor = _appPrefs.edit();
+                editor.putString(SystemMasterModel.SYSTEM_HOST_IP_PREF, ipAddr);
+                editor.commit();
+
+                _masterModel = new SystemMasterModel(ipAddr, SystemMasterActivity.this);
+
+                InputMethodManager inputMethodManager = (InputMethodManager)  SystemMasterActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(SystemMasterActivity.this.getCurrentFocus().getWindowToken(), 0);
             }
         });
 
@@ -68,6 +80,18 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
                 _masterModel.sendResetSystem();
             }
         });
+
+        _appPrefs = getPreferences(MODE_PRIVATE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        String ipString = _appPrefs.getString(SystemMasterModel.SYSTEM_HOST_IP_PREF, "");
+        if (!ipString.equals("")) {
+            _serverAddrEditText.setText(ipString);
+        }
     }
 
     /**

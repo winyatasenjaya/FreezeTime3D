@@ -1,6 +1,7 @@
 package com.creativedrewy.framepicapp.activities;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.media.ExifInterface;
@@ -15,6 +16,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 import com.creativedrewy.framepicapp.R;
 import com.creativedrewy.framepicapp.model.IServerMessageHandler;
 import com.creativedrewy.framepicapp.model.PicTakerModel;
+import com.creativedrewy.framepicapp.model.SystemMasterModel;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpPost;
 import com.koushikdutta.async.http.AsyncHttpRequest;
@@ -38,6 +41,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Activity/view for apps that will operate as PicTakers
@@ -52,6 +59,8 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     private RelativeLayout _readyStepContainer;
     private PicTakerModel _picTakerModel;
     private int _picFrameNumber = -1;
+    private SharedPreferences _appPrefs;
+    private Camera _systemCamera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +79,16 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         _picRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _picTakerModel = new PicTakerModel("192.168.10.162", PicTakerActivity.this);
+                String ipAddr = _serverAddrEditText.getText().toString();
+
+                SharedPreferences.Editor editor = _appPrefs.edit();
+                editor.putString(PicTakerModel.PICTAKER_HOST_IP_PREF, ipAddr);
+                editor.commit();
+
+                _picTakerModel = new PicTakerModel(ipAddr, PicTakerActivity.this);
+
+                InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(PicTakerActivity.this.getCurrentFocus().getWindowToken(), 0);
             }
         });
 
@@ -89,18 +107,30 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
                 //TODO: This is where we turn the camera viewport for pic taking
             }
         });
+
+        _appPrefs = getPreferences(MODE_PRIVATE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        String ipString = _appPrefs.getString(PicTakerModel.PICTAKER_HOST_IP_PREF, "");
+        if (!ipString.equals("")) {
+            _serverAddrEditText.setText(ipString);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        _registerStepContainer.setVisibility(View.GONE);
-        _submitOrderStepContainer.setVisibility(View.GONE);
-        _readyStepContainer.setVisibility(View.GONE);
+//        _registerStepContainer.setVisibility(View.GONE);
+//        _submitOrderStepContainer.setVisibility(View.GONE);
+//        _readyStepContainer.setVisibility(View.GONE);
 
         //TODO: Camera init actually happens after user clicks ready button
-        initializeCamera();
+//        initializeCamera();
     }
 
     @Override
@@ -108,10 +138,8 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         super.onStop();
         //TODO: Release camera here
 
-        _systemCamera.release();
+//        _systemCamera.release();
     }
-
-    Camera _systemCamera;
 
     /**
      *
@@ -172,19 +200,29 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
             Toast.makeText(PicTakerActivity.this, "Picture successfully captured", Toast.LENGTH_LONG).show();
 
             //TODO: The file uploading isn't working right now -- gotta get this to the server!
-            AsyncHttpRequest reqPost = new AsyncHttpRequest(URI.create("http://127.0.0.1:7373"), "POST");
+            AsyncHttpPost reqPost = new AsyncHttpPost("http://127.0.0.1:7373");
             MultipartFormDataBody body = new MultipartFormDataBody();
             body.addFilePart("framePic", pictureFile);
             body.addStringPart("info", "{frameNumber: " + _picFrameNumber + "}");
             reqPost.setBody(body);
 
-            AsyncHttpClient.getDefaultInstance().execute(reqPost, new HttpConnectCallback() {
+            Future<String> uploadReturn = AsyncHttpClient.getDefaultInstance().executeString(reqPost, new AsyncHttpClient.StringCallback() {
                 @Override
-                public void onConnectCompleted(Exception e, AsyncHttpResponse asyncHttpResponse) {
-                    //TODO: It would seem that this needs to be run on the ui thread
-                    Toast.makeText(PicTakerActivity.this, "File uploaded to FT3D server", Toast.LENGTH_LONG).show();
+                public void onCompleted(Exception e, AsyncHttpResponse asyncHttpResponse, String s) {
+                    Toast.makeText(PicTakerActivity.this, "File Uploaded!", Toast.LENGTH_LONG).show();
                 }
             });
+
+
+            try {
+                String serverMessage = uploadReturn.get(5000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
 
             // Adding Exif data for the orientation. For some strange reason the
             // ExifInterface class takes a string instead of a file.

@@ -18,6 +18,7 @@ import org.json.JSONObject;
 public class ModelBase {
     protected SocketIOClient _globalSocketIOClient;
     protected Activity _handlerActivity;
+    protected String _serverIP;
     protected String _roleString;   //Derived classes will need to specify a unique role string
     protected String _registerMessage;
     protected JSONObject _serverReturnJSON = null;
@@ -28,6 +29,7 @@ public class ModelBase {
      * @param handlerActivity We have to pass in an activity so that we can broker thread stuff to UI
      */
     public ModelBase(String ipAddress, Activity handlerActivity){
+        _serverIP = ipAddress;
         _handlerActivity = handlerActivity;
     }
 
@@ -35,7 +37,7 @@ public class ModelBase {
      * Startup the connection to the FT3D socket server
      */
     public void initConnection() {
-        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), "http://192.168.10.170:7474", new ConnectCallback() {
+        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), "http://" + _serverIP + ":7474", new ConnectCallback() {
             @Override
             public void onConnectCompleted(Exception e, SocketIOClient socketIOClient) {
                 _globalSocketIOClient = socketIOClient;
@@ -56,6 +58,9 @@ public class ModelBase {
                         }
                     }
                 });
+
+                //TODO: Need to handle the case when the app can't connect to the server
+                //socketIOClient.setErrorCallback();
 
                 sendAppDataEmit(_registerMessage);
             }
