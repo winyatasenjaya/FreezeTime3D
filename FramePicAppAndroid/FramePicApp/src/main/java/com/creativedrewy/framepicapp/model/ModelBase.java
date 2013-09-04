@@ -23,6 +23,9 @@ public class ModelBase {
     protected String _registerMessage;
     protected JSONObject _serverReturnJSON = null;
 
+    public String getServerIP() { return _serverIP; }
+    public void setServerIP(String _serverIP) { this._serverIP = _serverIP; }
+
     /**
      * Constructor
      * @param ipAddress IP address to FT3D socket server

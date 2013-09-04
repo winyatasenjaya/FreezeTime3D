@@ -43,9 +43,10 @@ require('zappajs') process.env.IP, 7373, ->
     @get '/': ->
         @render 'index'
 
-    @post '/fileUpload': ->
+    @post '/fileUpload': (req, res) ->
+        uploadedFrameInfo = req.body.info
+
         console.log '--- Yes we got here!!!! ---'
-        uploadedFrameInfo = JSON.parse @request.query.info
         sendClientMsg "picProcessingFC", uploadedFrameInfo.frameNumber
 
         fsLib.readFile @request.files.framePic.path, (err, data) ->
@@ -60,6 +61,7 @@ require('zappajs') process.env.IP, 7373, ->
                     dstPath: thumbImagePath
                     width: 177
                     height: 100
+                #TODO: Next up, need to get imgmagick working
                 #imageLib.resize imageResizeOpts, (err, stdout, stderr) ->
                 #    fsExtras.copy thumbImagePath, "./webserver/public/thumbs_temp/" + thumbImgName, (err) ->
                 #        sendClientMsg "picProcessingCompleteFC", uploadedFrameInfo.frameNumber

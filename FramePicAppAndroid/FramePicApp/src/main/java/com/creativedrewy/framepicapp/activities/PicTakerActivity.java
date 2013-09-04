@@ -32,6 +32,7 @@ import com.koushikdutta.async.http.AsyncHttpPost;
 import com.koushikdutta.async.http.AsyncHttpRequest;
 import com.koushikdutta.async.http.AsyncHttpResponse;
 import com.koushikdutta.async.http.MultipartFormDataBody;
+import com.koushikdutta.async.http.Part;
 import com.koushikdutta.async.http.callback.HttpConnectCallback;
 
 import java.io.File;
@@ -85,6 +86,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
                 editor.putString(PicTakerModel.PICTAKER_HOST_IP_PREF, ipAddr);
                 editor.commit();
 
+                //TODO: Add an error handler to interface so we can do something if user mis types IP
                 _picTakerModel = new PicTakerModel(ipAddr, PicTakerActivity.this);
 
                 InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -105,6 +107,12 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
                 _picTakerModel.submitReady(_picFrameNumber);
 
                 //TODO: This is where we turn the camera viewport for pic taking
+                _registerStepContainer.setVisibility(View.GONE);
+                _submitOrderStepContainer.setVisibility(View.GONE);
+                _readyStepContainer.setVisibility(View.GONE);
+
+                //TODO: Camera init actually happens after user clicks ready button
+                initializeCamera();
             }
         });
 
@@ -124,21 +132,15 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     @Override
     protected void onResume() {
         super.onResume();
-
-//        _registerStepContainer.setVisibility(View.GONE);
-//        _submitOrderStepContainer.setVisibility(View.GONE);
-//        _readyStepContainer.setVisibility(View.GONE);
-
-        //TODO: Camera init actually happens after user clicks ready button
-//        initializeCamera();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         //TODO: Release camera here
+        //TODO: Also, need to kill any open socket connections before leaving
 
-//        _systemCamera.release();
+        _systemCamera.release();
     }
 
     /**
@@ -200,7 +202,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
             Toast.makeText(PicTakerActivity.this, "Picture successfully captured", Toast.LENGTH_LONG).show();
 
             //TODO: The file uploading isn't working right now -- gotta get this to the server!
-            AsyncHttpPost reqPost = new AsyncHttpPost("http://127.0.0.1:7373");
+            AsyncHttpPost reqPost = new AsyncHttpPost("http://" + _picTakerModel.getServerIP() + ":7373/fileUpload");
             MultipartFormDataBody body = new MultipartFormDataBody();
             body.addFilePart("framePic", pictureFile);
             body.addStringPart("info", "{frameNumber: " + _picFrameNumber + "}");
@@ -209,20 +211,21 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
             Future<String> uploadReturn = AsyncHttpClient.getDefaultInstance().executeString(reqPost, new AsyncHttpClient.StringCallback() {
                 @Override
                 public void onCompleted(Exception e, AsyncHttpResponse asyncHttpResponse, String s) {
+                    //TODO: This shows no matter what, want to actually catch errors
                     Toast.makeText(PicTakerActivity.this, "File Uploaded!", Toast.LENGTH_LONG).show();
                 }
             });
 
-
             try {
-                String serverMessage = uploadReturn.get(5000, TimeUnit.MILLISECONDS);
+                String serverMessage = uploadReturn.get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
             }
+//            catch (TimeoutException e) {
+//                e.printStackTrace();
+//            }
 
             // Adding Exif data for the orientation. For some strange reason the
             // ExifInterface class takes a string instead of a file.
