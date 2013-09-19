@@ -16,7 +16,7 @@ module.exports.SystemSocketBroker = new Class({
      * @param websiteClientSocket A client websocket connection to the status website for update messaging
      */
     initialize: function(websiteClientSocket) {
-        this.websiteMessagingSocket = websiteClientSocket;
+        //this.websiteMessagingSocket = websiteClientSocket;
 
         var msgContents = require("fs").readFileSync(this.messagesJSONPath, "utf8");
         this.socketMessages = JSON.decode(msgContents);
@@ -43,7 +43,7 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.masterMessages.register:
                 this.masterSocket = socket;
                 this.sendAppSocketMessage(this.masterSocket, this.socketMessages.masterMessages.registerResponse);
-                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.register});
+                //this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.register});
 
                 console.log("Master connection has been established");
                 break;
@@ -55,7 +55,7 @@ module.exports.SystemSocketBroker = new Class({
                     var currentSocket = this.picSockets[addressKey];
                     this.sendAppSocketMessage(currentSocket, this.socketMessages.picTakerMessages.serverOrderingStart);
                 }
-                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.initPicTakerOrder});
+                //this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.initPicTakerOrder});
 
                 console.log("PicTaker ordering has been initiated");
                 break;
@@ -86,7 +86,7 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.picTakerMessages.register:
                 this.picSockets[socket.remoteAddress] = socket;
                 this.sendAppSocketMessage(socket, this.socketMessages.picTakerMessages.registerResponse);
-                this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register});
+                //this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register});
 
                 console.log("PicTaker has registered at address " + socket.remoteAddress);
                 break;
@@ -95,10 +95,10 @@ module.exports.SystemSocketBroker = new Class({
 
                 this.sendAppSocketMessage(socket, this.socketMessages.picTakerMessages.frameOrderResponse, this.currentFrameNumber);
                 this.sendAppSocketMessage(this.masterSocket, this.socketMessages.masterMessages.picTakerOrderUpdate);
-                this.websiteMessagingSocket.emit('systemMsg', {
-                    msg: this.socketMessages.picTakerMessages.requestFrameOrder,
-                    payload: this.currentFrameNumber
-                });
+                //this.websiteMessagingSocket.emit('systemMsg', {
+                //    msg: this.socketMessages.picTakerMessages.requestFrameOrder,
+                //    payload: this.currentFrameNumber
+                //});
 
                 console.log("PicTaker at " + socket.remoteAddress + " is frame number " + this.currentFrameNumber);
                 this.currentFrameNumber++;
@@ -106,10 +106,10 @@ module.exports.SystemSocketBroker = new Class({
                 break;
             case this.socketMessages.picTakerMessages.picTakingReady:
                 this.sendAppSocketMessage(this.masterSocket, this.socketMessages.masterMessages.picTakerFrameReadyUpdate);
-                this.websiteMessagingSocket.emit('systemMsg', {
-                    msg: this.socketMessages.picTakerMessages.picTakingReady,
-                    payload: receivedPayload
-                });
+                //this.websiteMessagingSocket.emit('systemMsg', {
+                //    msg: this.socketMessages.picTakerMessages.picTakingReady,
+                //    payload: receivedPayload
+                //});
 
                 console.log("PicTaker at " + socket.remoteAddress + " is ready for frame capture");
                 break;

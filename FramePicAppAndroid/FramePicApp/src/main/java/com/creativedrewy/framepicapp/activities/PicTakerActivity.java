@@ -1,5 +1,6 @@
 package com.creativedrewy.framepicapp.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
@@ -61,7 +62,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     private PicTakerModel _picTakerModel;
     private int _picFrameNumber = -1;
     private SharedPreferences _appPrefs;
-    private Camera _systemCamera;
+    private Camera _systemCamera = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +87,13 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
                 editor.putString(PicTakerModel.PICTAKER_HOST_IP_PREF, ipAddr);
                 editor.commit();
 
+                //ProgressDialog dialog = ProgressDialog.show(PicTakerActivity.this, "Uploading Frame", "Uploading your frame to FT3D server.");
+
                 //TODO: Add an error handler to interface so we can do something if user mis types IP
                 _picTakerModel = new PicTakerModel(ipAddr, PicTakerActivity.this);
 
-                InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(PicTakerActivity.this.getCurrentFocus().getWindowToken(), 0);
+                //InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                //inputMethodManager.hideSoftInputFromWindow(PicTakerActivity.this.getCurrentFocus().getWindowToken(), 0);
             }
         });
 
@@ -140,7 +143,9 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         //TODO: Release camera here
         //TODO: Also, need to kill any open socket connections before leaving
 
-        _systemCamera.release();
+        if (_systemCamera != null) {
+            _systemCamera.release();
+        }
     }
 
     /**
@@ -201,7 +206,6 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
 
             Toast.makeText(PicTakerActivity.this, "Picture successfully captured", Toast.LENGTH_LONG).show();
 
-            //TODO: The file uploading isn't working right now -- gotta get this to the server!
             AsyncHttpPost reqPost = new AsyncHttpPost("http://" + _picTakerModel.getServerIP() + ":7373/fileUpload");
             MultipartFormDataBody body = new MultipartFormDataBody();
             body.addFilePart("framePic", pictureFile);

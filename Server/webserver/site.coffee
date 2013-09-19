@@ -17,12 +17,18 @@ require('zappajs') process.env.IP, 7373, ->
     masterMessages = systemMessagesJSON.masterMessages
     picTakerMessages = systemMessagesJSON.picTakerMessages
 
+    appSocketBroker = new (require("../appsocketserver/SystemSocketBroker")).SystemSocketBroker(@socket)
+
     sendClientMsg = (msgString, payloadData) ->
         if statusUpdateClientSocket
             statusUpdateClientSocket.emit 'update', {msg: msgString, payload: payloadData}
 
     @on 'idClientConnection': ->
         statusUpdateClientSocket = @socket
+
+    @on 'AppDataEmitEvent': ->
+        @socket.remoteAddress = @socket.handshake.address.address
+        appSocketBroker.processSystemMessages @data, @socket
 
     @on 'systemMsg': ->
         switch @data.msg
@@ -38,15 +44,8 @@ require('zappajs') process.env.IP, 7373, ->
             when picTakerMessages.requestFrameOrder then sendClientMsg "picTakerHasOrderedFC", @data.payload
             when picTakerMessages.picTakingReady then sendClientMsg "picTakerIsReadyFC", @data.payload
 
-    @view index: ->
-
-    @get '/': ->
-        @render 'index'
-
     @post '/fileUpload': (req, res) ->
         uploadedFrameInfo = req.body.info
-
-        console.log '--- Yes we got here!!!! ---'
         sendClientMsg "picProcessingFC", uploadedFrameInfo.frameNumber
 
         fsLib.readFile @request.files.framePic.path, (err, data) ->
@@ -65,6 +64,11 @@ require('zappajs') process.env.IP, 7373, ->
                 #imageLib.resize imageResizeOpts, (err, stdout, stderr) ->
                 #    fsExtras.copy thumbImagePath, "./webserver/public/thumbs_temp/" + thumbImgName, (err) ->
                 #        sendClientMsg "picProcessingCompleteFC", uploadedFrameInfo.frameNumber
+
+    @view index: ->
+
+    @get '/': ->
+        @render 'index'
 
     @view layout: ->
         doctype 5
