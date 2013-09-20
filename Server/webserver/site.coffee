@@ -12,7 +12,7 @@ require('zappajs') process.env.IP, 7373, ->
 
     freezeTimeSessionId = undefined
     sessionDirPath = undefined
-    appSocketBroker = new (require("../appsocketserver/SystemSocketBroker")).SystemSocketBroker(@socket)
+    appSocketBroker = new (require("../appsocketserver/SystemSocketBroker"))
 
     ###
     # The status update website is sending the message so we can keep a reference to its socket

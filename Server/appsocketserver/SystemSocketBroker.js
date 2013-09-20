@@ -1,8 +1,11 @@
 
 /**
- * Class that brokers all of the varied socket communications that come in from the mobile apps
+ * Class that brokers all of the varied socket communications that come in from the mobile apps.
+ * -Did this need to be a mootools object? No. But I just can't resist the syntax. This class was
+ * -originally part of a different implementation of the socket stuff, which you can see in the
+ * -commit history.
  */
-module.exports.SystemSocketBroker = new Class({
+module.exports = new Class({
     masterSocket: null,
     picSockets: {},
     orderedSockets: {},
@@ -16,7 +19,7 @@ module.exports.SystemSocketBroker = new Class({
      * @constructor
      * @param websiteClientSocket A client websocket connection to the status website for update messaging
      */
-    initialize: function(websiteClientSocket) {
+    initialize: function() {
         var msgContents = require("fs").readFileSync(this.messagesJSONPath, "utf8");
         this.socketMessages = JSON.decode(msgContents);
 
