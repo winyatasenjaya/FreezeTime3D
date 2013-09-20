@@ -2,15 +2,21 @@ package com.creativedrewy.framepicapp.model;
 
 import android.app.Activity;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.creativedrewy.framepicapp.R;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
+import com.koushikdutta.async.http.socketio.ErrorCallback;
 import com.koushikdutta.async.http.socketio.EventCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
+import com.koushikdutta.async.http.socketio.SocketIORequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.concurrent.Future;
 
 /**
  * Functionality related to all models in the application; provides uniform server interaction
@@ -40,34 +46,41 @@ public class ModelBase {
      * Startup the connection to the FT3D socket server
      */
     public void initConnection() {
-        String serverUrl = "http://" + _serverIP + ":7373";
+        SocketIORequest req = new SocketIORequest("http://" + _serverIP + ":7373");
+        req.setTimeout(2500);
 
-        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), serverUrl, new ConnectCallback() {
+        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), req, new ConnectCallback() {
             @Override
-            public void onConnectCompleted(Exception e, SocketIOClient socketIOClient) {
-                _globalSocketIOClient = socketIOClient;
-
-                socketIOClient.on("ServerDataEmitEvent", new EventCallback() {
-                    @Override
-                    public void onEvent(JSONArray jsonArray, Acknowledge acknowledge) {
-                        _serverReturnJSON = jsonArray.optJSONObject(0);
-
-                        if (_serverReturnJSON != null) {
-                            _handlerActivity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //We also know that all passed in activities will implement the interface
-                                    ((IServerMessageHandler) _handlerActivity).handleServerMessage(_serverReturnJSON.optString("msg"), _serverReturnJSON.optString("payload"));
-                                }
-                            });
+            public void onConnectCompleted(Exception ex, SocketIOClient socketIOClient) {
+                if (ex != null) {
+                    _handlerActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_handlerActivity, _handlerActivity.getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show();
                         }
-                    }
-                });
+                    });
+                } else {
+                    _globalSocketIOClient = socketIOClient;
 
-                //TODO: Need to handle the case when the app can't connect to the server
-                //socketIOClient.setErrorCallback();
+                    socketIOClient.on("ServerDataEmitEvent", new EventCallback() {
+                        @Override
+                        public void onEvent(JSONArray jsonArray, Acknowledge acknowledge) {
+                            _serverReturnJSON = jsonArray.optJSONObject(0);
 
-                sendAppDataEmit(_registerMessage);
+                            if (_serverReturnJSON != null) {
+                                _handlerActivity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //We also know that all passed in activities will implement the interface
+                                        ((IServerMessageHandler) _handlerActivity).handleServerMessage(_serverReturnJSON.optString("msg"), _serverReturnJSON.optString("payload"));
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                    sendAppDataEmit(_registerMessage);
+                }
             }
         });
     }
