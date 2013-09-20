@@ -126,6 +126,9 @@ module.exports = new Class({
         }
     },
 
+    /**
+     * Send a message to the status update website so it can reflect what is going on with the system
+     */
     sendWebsiteClientMessage: function(msgString, payloadData) {
         if (this.websiteMessagingSocket) {
             this.websiteMessagingSocket.emit("update", {msg: msgString, payload: payloadData});

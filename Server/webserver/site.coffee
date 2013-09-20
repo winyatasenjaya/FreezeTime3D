@@ -40,16 +40,16 @@ require('zappajs') process.env.IP, 7373, ->
     # Each PicTaker instance uploads its photo to the server, and this is where we handle that
     ###
     @post '/fileUpload': (req, res) ->
-        uploadedFrameInfo = req.body.info
-        sendClientMsg "picProcessingFC", uploadedFrameInfo.frameNumber
+        frameNumber = req.body.frameNumber
+        appSocketBroker.sendWebsiteClientMessage "picProcessingFC", frameNumber
 
         fsLib.readFile @request.files.framePic.path, (err, data) ->
-            saveImagePath = sessionDirPath + "/frame" + uploadedFrameInfo.frameNumber + ".jpg"
-            thumbImgName = "frame-thumb" + uploadedFrameInfo.frameNumber + ".jpg"
+            saveImagePath = sessionDirPath + "/frame" + frameNumber + ".jpg"
+            thumbImgName = "frame-thumb" + frameNumber + ".jpg"
             thumbImagePath = sessionDirPath + "/" + thumbImgName
 
             fsLib.writeFile saveImagePath, data, (err) ->
-                console.log "Frame " + uploadedFrameInfo.frameNumber + " successfully uploaded"
+                console.log "Frame " + frameNumber + " successfully uploaded"
                 imageResizeOpts =
                     srcPath: saveImagePath
                     dstPath: thumbImagePath
@@ -58,7 +58,7 @@ require('zappajs') process.env.IP, 7373, ->
                 #TODO: Next up, need to get imgmagick working
                 #imageLib.resize imageResizeOpts, (err, stdout, stderr) ->
                 #    fsExtras.copy thumbImagePath, "./webserver/public/thumbs_temp/" + thumbImgName, (err) ->
-                #        sendClientMsg "picProcessingCompleteFC", uploadedFrameInfo.frameNumber
+                #        appSocketBroker.sendWebsiteClientMessage "picProcessingCompleteFC", uploadedFrameInfo.frameNumber
 
     @view index: ->
 

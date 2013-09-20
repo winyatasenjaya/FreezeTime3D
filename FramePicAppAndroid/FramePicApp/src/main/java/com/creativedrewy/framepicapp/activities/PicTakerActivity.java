@@ -140,7 +140,6 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     @Override
     protected void onStop() {
         super.onStop();
-        //TODO: Release camera here
         //TODO: Also, need to kill any open socket connections before leaving
 
         if (_systemCamera != null) {
@@ -152,30 +151,33 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
      *
      */
     public void initializeCamera() {
-        //TODO: Prolly wanna catch exceptions in case there is a camera init issue
-        _systemCamera = Camera.open();
-        _systemCamera.setDisplayOrientation(90);
+        try {
+            _systemCamera = Camera.open();
+            _systemCamera.setDisplayOrientation(90);
 
-        Camera.Parameters params = _systemCamera.getParameters();
-        params.setPictureSize(2560, 1920);
-        params.setPictureFormat(PixelFormat.JPEG);
-        params.setJpegQuality(85);
-        _systemCamera.setParameters(params);
+            Camera.Parameters params = _systemCamera.getParameters();
+            params.setPictureSize(2560, 1920);
+            params.setPictureFormat(PixelFormat.JPEG);
+            params.setJpegQuality(85);
+            _systemCamera.setParameters(params);
 
-        CameraPreview cameraPreview = new CameraPreview(this, _systemCamera);
+            CameraPreview cameraPreview = new CameraPreview(this, _systemCamera);
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        cameraPreview.setLayoutParams(layoutParams);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            cameraPreview.setLayoutParams(layoutParams);
 
-        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.picTakerMainLinearLayout);
-        mainLayout.addView(cameraPreview);
+            LinearLayout mainLayout = (LinearLayout) findViewById(R.id.picTakerMainLinearLayout);
+            mainLayout.addView(cameraPreview);
 
-        cameraPreview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                _systemCamera.takePicture(null, null, _pictureCallback);
-            }
-        });
+            cameraPreview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    _systemCamera.takePicture(null, null, _pictureCallback);
+                }
+            });
+        } catch (Exception ex) {
+            Toast.makeText(this, "Could not init camera. Will not capture frame.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private Camera.PictureCallback _pictureCallback = new Camera.PictureCallback() {
@@ -209,7 +211,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
             AsyncHttpPost reqPost = new AsyncHttpPost("http://" + _picTakerModel.getServerIP() + ":7373/fileUpload");
             MultipartFormDataBody body = new MultipartFormDataBody();
             body.addFilePart("framePic", pictureFile);
-            body.addStringPart("info", "{frameNumber: " + _picFrameNumber + "}");
+            body.addStringPart("frameNumber", String.valueOf(_picFrameNumber));
             reqPost.setBody(body);
 
             Future<String> uploadReturn = AsyncHttpClient.getDefaultInstance().executeString(reqPost, new AsyncHttpClient.StringCallback() {
