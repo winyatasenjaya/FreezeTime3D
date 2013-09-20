@@ -10,40 +10,35 @@ require('zappajs') process.env.IP, 7373, ->
     imageLib = require("imagemagick")
     fsExtras = require('fs.extra')
 
-    statusUpdateClientSocket = undefined
     freezeTimeSessionId = undefined
     sessionDirPath = undefined
-    systemMessagesJSON = JSON.decode(fsLib.readFileSync("./socketMessages.json", "utf8"))
-    masterMessages = systemMessagesJSON.masterMessages
-    picTakerMessages = systemMessagesJSON.picTakerMessages
-
     appSocketBroker = new (require("../appsocketserver/SystemSocketBroker")).SystemSocketBroker(@socket)
 
-    sendClientMsg = (msgString, payloadData) ->
-        if statusUpdateClientSocket
-            statusUpdateClientSocket.emit 'update', {msg: msgString, payload: payloadData}
-
+    ###
+    # The status update website is sending the message so we can keep a reference to its socket
+    ###
     @on 'idClientConnection': ->
-        statusUpdateClientSocket = @socket
+        appSocketBroker.websiteMessagingSocket = @socket
 
+    ###
+    # This is the main event that app instances use to communicate with this socket server. We pass
+    # off all message handling to the SystemSocketBroker instance.
+    ###
     @on 'AppDataEmitEvent': ->
         @socket.remoteAddress = @socket.handshake.address.address
         appSocketBroker.processSystemMessages @data, @socket
 
-    @on 'systemMsg': ->
-        switch @data.msg
-            when masterMessages.register then sendClientMsg "registerMasterFC"
-            when masterMessages.initPicTakerOrder then do ->
-                freezeTimeSessionId = "FT3D-" + new Date().getTime()
-                sessionDirPath = "./sessions/" + freezeTimeSessionId
-                fsLib.mkdirSync sessionDirPath
-                sendClientMsg "initPicTakerOrderFC"
-            #masterMessages.startFrameCapture #TODO: We do want the website UI to respond when the master kicks of the event!
-            #masterMessages.resetSystem
-            when picTakerMessages.register then sendClientMsg "picTakerHasRegisteredFC"
-            when picTakerMessages.requestFrameOrder then sendClientMsg "picTakerHasOrderedFC", @data.payload
-            when picTakerMessages.picTakingReady then sendClientMsg "picTakerIsReadyFC", @data.payload
+    ###
+    # The SystemSocketBroker sends a message when it's time to setup the filesystem for the session
+    ###
+    appSocketBroker.on 'onSetupSessionFileSystem', ->
+        freezeTimeSessionId = "FT3D-" + new Date().getTime()
+        sessionDirPath = "./sessions/" + freezeTimeSessionId
+        fsLib.mkdirSync sessionDirPath
 
+    ###
+    # Each PicTaker instance uploads its photo to the server, and this is where we handle that
+    ###
     @post '/fileUpload': (req, res) ->
         uploadedFrameInfo = req.body.info
         sendClientMsg "picProcessingFC", uploadedFrameInfo.frameNumber

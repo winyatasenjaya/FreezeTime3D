@@ -10,16 +10,25 @@ module.exports.SystemSocketBroker = new Class({
     messagesJSONPath: "./socketMessages.json",
     socketMessages: {},
     websiteMessagingSocket: null,
+    messageEmitter: null,
 
     /**
      * @constructor
      * @param websiteClientSocket A client websocket connection to the status website for update messaging
      */
     initialize: function(websiteClientSocket) {
-        //this.websiteMessagingSocket = websiteClientSocket;
-
         var msgContents = require("fs").readFileSync(this.messagesJSONPath, "utf8");
         this.socketMessages = JSON.decode(msgContents);
+
+        var Emitter = require('events').EventEmitter;
+        this.messageEmitter = new Emitter();
+    },
+
+    /**
+     * Wrapper event handler function so this class can talk back to its consumer
+     */
+    on: function(event, func) {
+        this.messageEmitter.on(event, func);
     },
 
     /**
@@ -43,9 +52,9 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.masterMessages.register:
                 this.masterSocket = socket;
                 this.sendAppSocketMessage(this.masterSocket, this.socketMessages.masterMessages.registerResponse);
-                //this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.register});
+                this.sendWebsiteClientMessage("registerMasterFC");
 
-                console.log("Master connection has been established");
+                console.log(":::Master::: Connection has been established");
                 break;
             case this.socketMessages.masterMessages.initPicTakerOrder:
                 this.currentFrameNumber = 0;
@@ -55,16 +64,19 @@ module.exports.SystemSocketBroker = new Class({
                     var currentSocket = this.picSockets[addressKey];
                     this.sendAppSocketMessage(currentSocket, this.socketMessages.picTakerMessages.serverOrderingStart);
                 }
-                //this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.masterMessages.initPicTakerOrder});
 
-                console.log("PicTaker ordering has been initiated");
+                this.sendWebsiteClientMessage("initPicTakerOrderFC");
+                this.messageEmitter.emit("onSetupSessionFileSystem");   //Send the event to setup the server filesystem
+
+                console.log(":::Master::: PicTaker ordering has been initiated");
                 break;
             case this.socketMessages.masterMessages.startFrameCapture:
-                console.log("Frame capturing beginning - get ready to freeze time!")
+                console.log(":::Master::: Frame capturing beginning - get ready to freeze time!")
                 for (var i = 0; i < this.currentFrameNumber; i++) {
                     var currentSocketInOrder = this.orderedSockets[i];
                     this.sendAppSocketMessage(currentSocketInOrder, this.socketMessages.picTakerMessages.takeFramePic);
                 }
+                //TODO: We want the website UI to respond when the master kicks of the event!
 
                 break;
             case this.socketMessages.masterMessages.resetSystem:
@@ -72,8 +84,9 @@ module.exports.SystemSocketBroker = new Class({
                     var currentSocket = this.picSockets[addressKey];
                     this.sendAppSocketMessage(currentSocket, this.socketMessages.picTakerMessages.resetPicTaker);
                 }
+                //TODO: Will need to do some stuff to the website on reset
 
-                console.log("System has been reset for next frame capture operation");
+                console.log(":::Master::: System has been reset for next frame capture operation");
                 break;
         }
     },
@@ -86,33 +99,33 @@ module.exports.SystemSocketBroker = new Class({
             case this.socketMessages.picTakerMessages.register:
                 this.picSockets[socket.remoteAddress] = socket;
                 this.sendAppSocketMessage(socket, this.socketMessages.picTakerMessages.registerResponse);
-                //this.websiteMessagingSocket.emit('systemMsg', {msg: this.socketMessages.picTakerMessages.register});
+                this.sendWebsiteClientMessage("picTakerHasRegisteredFC");
 
-                console.log("PicTaker has registered at address " + socket.remoteAddress);
+                console.log(":::PT::: Registered at address " + socket.remoteAddress);
                 break;
             case this.socketMessages.picTakerMessages.requestFrameOrder:
                 this.orderedSockets[this.currentFrameNumber] = socket;
 
                 this.sendAppSocketMessage(socket, this.socketMessages.picTakerMessages.frameOrderResponse, this.currentFrameNumber);
                 this.sendAppSocketMessage(this.masterSocket, this.socketMessages.masterMessages.picTakerOrderUpdate);
-                //this.websiteMessagingSocket.emit('systemMsg', {
-                //    msg: this.socketMessages.picTakerMessages.requestFrameOrder,
-                //    payload: this.currentFrameNumber
-                //});
+                this.sendWebsiteClientMessage("picTakerHasOrderedFC", this.currentFrameNumber);
 
-                console.log("PicTaker at " + socket.remoteAddress + " is frame number " + this.currentFrameNumber);
+                console.log(":::PT::: PicTaker at " + socket.remoteAddress + " is frame number " + this.currentFrameNumber);
                 this.currentFrameNumber++;
 
                 break;
             case this.socketMessages.picTakerMessages.picTakingReady:
                 this.sendAppSocketMessage(this.masterSocket, this.socketMessages.masterMessages.picTakerFrameReadyUpdate);
-                //this.websiteMessagingSocket.emit('systemMsg', {
-                //    msg: this.socketMessages.picTakerMessages.picTakingReady,
-                //    payload: receivedPayload
-                //});
+                this.sendWebsiteClientMessage("picTakerIsReadyFC", receivedPayload);
 
-                console.log("PicTaker at " + socket.remoteAddress + " is ready for frame capture");
+                console.log(":::PT::: PicTaker at " + socket.remoteAddress + " is ready for frame capture");
                 break;
+        }
+    },
+
+    sendWebsiteClientMessage: function(msgString, payloadData) {
+        if (this.websiteMessagingSocket) {
+            this.websiteMessagingSocket.emit("update", {msg: msgString, payload: payloadData});
         }
     },
 
