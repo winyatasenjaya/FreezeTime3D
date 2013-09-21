@@ -56,9 +56,11 @@ require('zappajs') process.env.IP, 7373, ->
                     width: 177
                     height: 100
                 #TODO: Need to figure out how to get these files to overwrite
+                #TODO: Also, after all thumbs have been uploaded, create demo strip
                 imageLib.resize imageResizeOpts, (err, stdout, stderr) ->
                     fsExtras.copy thumbImagePath, "./webserver/public/thumbs_temp/" + thumbImgName, (err) ->
                         appSocketBroker.sendWebsiteClientMessage "picProcessingCompleteFC", frameNumber
+                        res.send ":::Server::: Frame upload complete"
 
     @view index: ->
 

@@ -54,7 +54,8 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:background="@drawable/control_box_background"
-            android:layout_margin="5dp">
+            android:layout_margin="5dp"
+        android:padding="20dp">
 
         <Button
                 android:layout_width="wrap_content"
