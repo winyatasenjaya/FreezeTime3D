@@ -168,13 +168,6 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
 
             LinearLayout mainLayout = (LinearLayout) findViewById(R.id.picTakerMainLinearLayout);
             mainLayout.addView(cameraPreview);
-
-            cameraPreview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    _systemCamera.takePicture(null, null, _pictureCallback);
-                }
-            });
         } catch (Exception ex) {
             Toast.makeText(this, "Could not init camera. Will not capture frame.", Toast.LENGTH_LONG).show();
         }
@@ -218,7 +211,12 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
                 @Override
                 public void onCompleted(Exception e, AsyncHttpResponse asyncHttpResponse, String s) {
                     //TODO: This shows no matter what, want to actually catch errors
-                    Toast.makeText(PicTakerActivity.this, "File Uploaded!", Toast.LENGTH_LONG).show();
+//                    PicTakerActivity.this.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Toast.makeText(PicTakerActivity.this, "File Uploaded!", Toast.LENGTH_LONG).show();
+//                        }
+//                    });
                 }
             });
 
@@ -299,11 +297,12 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
 
             _submitPicOrderButton.setText("Frame Number: " + _picFrameNumber);
             _submitPicOrderButton.setEnabled(false);
-
-//            var now:Date = new Date();
-//            _imgFileName = "frame_" + _picFrameNumber + "_" + now.time + ".jpg";
         } else if (message.equals("TakeFramePic")) {
-            //takeSaveCameraPic();
+            if (_systemCamera != null) {
+                _systemCamera.takePicture(null, null, _pictureCallback);
+            } else {
+                //TODO: Give a message to the user how they aren't taking a pic?
+            }
         } else if (message.equals("ResetPicTaking")) {
             //TODO: Reset UI to redo the whole process
         }

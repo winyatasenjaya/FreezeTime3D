@@ -55,10 +55,10 @@ require('zappajs') process.env.IP, 7373, ->
                     dstPath: thumbImagePath
                     width: 177
                     height: 100
-                #TODO: Next up, need to get imgmagick working
-                #imageLib.resize imageResizeOpts, (err, stdout, stderr) ->
-                #    fsExtras.copy thumbImagePath, "./webserver/public/thumbs_temp/" + thumbImgName, (err) ->
-                #        appSocketBroker.sendWebsiteClientMessage "picProcessingCompleteFC", uploadedFrameInfo.frameNumber
+                #TODO: Need to figure out how to get these files to overwrite
+                imageLib.resize imageResizeOpts, (err, stdout, stderr) ->
+                    fsExtras.copy thumbImagePath, "./webserver/public/thumbs_temp/" + thumbImgName, (err) ->
+                        appSocketBroker.sendWebsiteClientMessage "picProcessingCompleteFC", frameNumber
 
     @view index: ->
 
