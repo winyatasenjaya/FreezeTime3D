@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.creativedrewy.framepicapp.R;
+import com.creativedrewy.framepicapp.camera.CameraPreview;
 import com.creativedrewy.framepicapp.model.IServerMessageHandler;
 import com.creativedrewy.framepicapp.model.PicTakerModel;
 import com.creativedrewy.framepicapp.model.SystemMasterModel;
@@ -64,20 +65,25 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     private Button _submitPicOrderButton;
     private Button _picReadyButton;
     private EditText _serverAddrEditText;
+    private LinearLayout _mainLayout;
     private RelativeLayout _registerStepContainer;
     private RelativeLayout _submitOrderStepContainer;
     private RelativeLayout _readyStepContainer;
+    private ImageView _framePreviewImageView;
     private PicTakerModel _picTakerModel;
     private int _picFrameNumber = -1;
     private SharedPreferences _appPrefs;
     private Camera _systemCamera = null;
     private CameraPreview _cameraPreviewWindow;
     private ProgressDialog _uploadingDialog;
+    private byte[] _capturedImageBytes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pictaker_layout);
+
+        _mainLayout = (LinearLayout) findViewById(R.id.picTakerMainLinearLayout);
 
         _picRegisterButton = (Button) findViewById(R.id.picRegisterButton);
         _submitPicOrderButton = (Button) findViewById(R.id.submitPicOrderButton);
@@ -87,6 +93,9 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         _registerStepContainer = (RelativeLayout) findViewById(R.id.registerStepContainer);
         _submitOrderStepContainer = (RelativeLayout) findViewById(R.id.submitOrderStepContainer);
         _readyStepContainer = (RelativeLayout) findViewById(R.id.readyStepContainer);
+
+        _framePreviewImageView = (ImageView) findViewById(R.id.framePreviewImageView);
+        _framePreviewImageView.setVisibility(View.GONE);
 
         _picRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,11 +147,6 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         //TODO: Also, need to kill any open socket connections before leaving?
@@ -153,7 +157,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     }
 
     /**
-     *
+     * Setup the camera and preview that will show while grabbing the frame
      */
     public void initializeCamera() {
         try {
@@ -161,7 +165,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
             _systemCamera.setDisplayOrientation(90);
 
             Camera.Parameters params = _systemCamera.getParameters();
-            params.setPictureSize(2560, 1920);
+            params.setPictureSize(2560, 1920);  //This is 5mp
             params.setPictureFormat(PixelFormat.JPEG);
             params.setJpegQuality(85);
             _systemCamera.setParameters(params);
@@ -171,30 +175,26 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             _cameraPreviewWindow.setLayoutParams(layoutParams);
 
-            LinearLayout mainLayout = (LinearLayout) findViewById(R.id.picTakerMainLinearLayout);
-            mainLayout.addView(_cameraPreviewWindow);
+            _mainLayout.addView(_cameraPreviewWindow);
         } catch (Exception ex) {
             Toast.makeText(this, "Could not init camera. Will not capture frame.", Toast.LENGTH_LONG).show();
         }
     }
 
-    private byte[] _imageBytes;
-
+    /**
+     * After the picture has been taken, save it to user's device, upload to FT3D server, and
+     * update the UI this particular app instance's frame
+     */
     private Camera.PictureCallback _pictureCallback = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] bytes, Camera camera) {
-            _imageBytes = bytes;
+            _capturedImageBytes = bytes;
             String fileName = "FT3D_" + _picFrameNumber + "_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()).toString() + ".jpg";
 
             File sdRoot = Environment.getExternalStorageDirectory();
             String dir = "/FT3D/";
-
-            // Creating the directory where to save the image. Sadly in older
-            // version of Android we can not get the Media catalog name
             File mkDir = new File(sdRoot, dir);
             mkDir.mkdirs();
-
-            // Main file where to save the data that we recive from the camera
             File pictureFile = new File(sdRoot, dir + fileName);
 
             try {
@@ -225,73 +225,27 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
                         _systemCamera.release();
                     }
 
-                    LinearLayout mainLayout = (LinearLayout) findViewById(R.id.picTakerMainLinearLayout);
-                    mainLayout.removeView(_cameraPreviewWindow);
-
-                    ImageView newImage = new ImageView(PicTakerActivity.this);
-                    Bitmap bmp = BitmapFactory.decodeByteArray(_imageBytes, 0, _imageBytes.length);
-
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    newImage.setLayoutParams(layoutParams);
-                    newImage.setImageBitmap(bmp);
-
-                    _picReadyButton.setVisibility(View.GONE);
-                    _readyStepContainer.addView(newImage);
+                    _mainLayout.removeView(_cameraPreviewWindow);
 
                     _registerStepContainer.setVisibility(View.VISIBLE);
                     _submitOrderStepContainer.setVisibility(View.VISIBLE);
                     _readyStepContainer.setVisibility(View.VISIBLE);
+
+                    _framePreviewImageView.setImageBitmap(BitmapFactory.decodeByteArray(_capturedImageBytes, 0, _capturedImageBytes.length));
+                    _framePreviewImageView.setVisibility(View.VISIBLE);
+                    _picReadyButton.setVisibility(View.GONE);
                 }
             });
 
             try {
                 _uploadingDialog = ProgressDialog.show(PicTakerActivity.this, "Uploading Frame", "Uploading your frame to FT3D server.");
                 uploadReturn.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (Exception e) {
+                //Do we need to handle the specific timeout exception?
                 e.printStackTrace();
             }
-//            catch (TimeoutException e) {
-//                e.printStackTrace();
-//            }
         }
     };
-
-    /**
-     *
-     */
-    public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
-        private SurfaceHolder _surfaceHolder;
-        private Camera _camera;
-
-        public CameraPreview(Context context, Camera camera) {
-            super(context);
-            _camera = camera;
-
-            _surfaceHolder = getHolder();
-            _surfaceHolder.addCallback(this);
-            _surfaceHolder.setFixedSize(100, 100);
-        }
-
-        @Override
-        public void surfaceCreated(SurfaceHolder surfaceHolder) {
-            try {
-                _camera.setPreviewDisplay(_surfaceHolder);
-                _camera.startPreview();
-            } catch (IOException e) {
-                Log.d("DG_DEBUG", "Error setting camera preview: " + e.getMessage());
-            }
-        }
-
-        @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            //TODO: Possibly handle device rotation here, but will have to investigate
-        }
-
-        @Override
-        public void surfaceDestroyed(SurfaceHolder surfaceHolder) { }
-    }
 
     /**
      * Handle message/payload data from the FT3D server; implemented from the interface
