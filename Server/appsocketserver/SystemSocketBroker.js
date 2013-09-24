@@ -74,7 +74,7 @@ module.exports = new Class({
                 console.log(":::Master::: PicTaker ordering has been initiated");
                 break;
             case this.socketMessages.masterMessages.startFrameCapture:
-                console.log(":::Master::: Frame capturing beginning - get ready to freeze time!")
+                console.log(":::Master::: Frame capturing beginning - get ready to freeze time!");
                 for (var i = 0; i < this.currentFrameNumber; i++) {
                     var currentSocketInOrder = this.orderedSockets[i];
                     this.sendAppSocketMessage(currentSocketInOrder, this.socketMessages.picTakerMessages.takeFramePic);
@@ -87,6 +87,10 @@ module.exports = new Class({
                     var currentSocket = this.picSockets[addressKey];
                     this.sendAppSocketMessage(currentSocket, this.socketMessages.picTakerMessages.resetPicTaker);
                 }
+
+                //picSockets: {},
+                //orderedSockets: {},
+                //currentFrameNumber: 0,
                 //TODO: Will need to do some stuff to the website on reset
 
                 console.log(":::Master::: System has been reset for next frame capture operation");

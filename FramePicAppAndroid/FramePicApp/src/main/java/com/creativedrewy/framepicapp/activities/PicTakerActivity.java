@@ -273,7 +273,28 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
                 //TODO: Give a message to the user how they aren't taking a pic?
             }
         } else if (message.equals("ResetPicTaking")) {
-            //TODO: Reset UI to redo the whole process
+            //TODO: Possibly reset registration, model etc?
+            _picFrameNumber = -1;
+
+            if (_systemCamera != null) {
+                _systemCamera.release();
+            }
+
+            if (_cameraPreviewWindow != null) {
+                _mainLayout.removeView(_cameraPreviewWindow);
+            }
+
+            _registerStepContainer.setVisibility(View.VISIBLE);
+            _submitOrderStepContainer.setVisibility(View.VISIBLE);
+            _readyStepContainer.setVisibility(View.VISIBLE);
+
+            _submitPicOrderButton.setEnabled(false);
+            _submitPicOrderButton.setText(getString(R.string.submit_frame_order_button_text));
+
+            _picReadyButton.setVisibility(View.VISIBLE);
+            _picReadyButton.setEnabled(false);
+
+            _framePreviewImageView.setImageDrawable(null);
         }
     }
 }

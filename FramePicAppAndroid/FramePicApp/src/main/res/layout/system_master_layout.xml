@@ -21,7 +21,7 @@
                 <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Register"
+                        android:text="@string/register_button_text"
                         android:id="@+id/masterRegisterButton"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"/>
@@ -49,11 +49,12 @@
                 <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Init Ordering"
+                        android:text="@string/init_ordering_label"
                         android:id="@+id/initOrderingButton"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                    android:singleLine="false" />
 
                 <TextView
                         android:layout_width="wrap_content"
@@ -81,7 +82,7 @@
                 <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Freeze Time!"
+                        android:text="@string/freeze_time_button_text"
                         android:id="@+id/freezeTimeButton"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"
@@ -105,11 +106,12 @@
                 <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Reset System"
+                        android:text="@string/reset_system_button_text"
                         android:id="@+id/resetSystemButton"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                    android:singleLine="false" />
             </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

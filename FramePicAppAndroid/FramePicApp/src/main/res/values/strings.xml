@@ -7,5 +7,12 @@
     <string name="title_activity_system_master">FT3D Master</string>
     <string name="title_activity_pic_taker">FT3D PicTaker</string>
     <string name="server_connect_error_message">Couldn\'t connect to FT3D server. Please check IP address.</string>
+    <string name="init_ordering_label">Init Ordering</string>
+    <string name="freeze_time_button_text">Freeze Time!</string>
+    <string name="register_button_text">Register</string>
+    <string name="register_frame_button_text">Register PicTaker</string>
+    <string name="submit_frame_order_button_text">Submit Pic Order</string>
+    <string name="ready_button_text">Ready!</string>
+    <string name="reset_system_button_text">Reset System</string>
 
 </resources>

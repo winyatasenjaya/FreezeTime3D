@@ -1,5 +1,7 @@
 package com.creativedrewy.framepicapp.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
@@ -64,6 +66,9 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
             @Override
             public void onClick(View view) {
                 _masterModel.sendInitOrder();
+
+                _initOrderingButton.setText("Ordering...");
+                _initOrderingButton.setEnabled(false);
             }
         });
 
@@ -71,13 +76,16 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
             @Override
             public void onClick(View view) {
                 _masterModel.sendFreezeTime();
+
+                _freezeTimeButton.setText("Boom!");
+                _freezeTimeButton.setEnabled(false);
             }
         });
 
         _resetSystemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                _masterModel.sendResetSystem();
+                resetFreezeOperation();
             }
         });
 
@@ -92,6 +100,38 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
         if (!ipString.equals("")) {
             _serverAddrEditText.setText(ipString);
         }
+    }
+
+    /**
+     * Reset the system for the next round
+     */
+    public void resetFreezeOperation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to reset?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                _masterModel.sendResetSystem();
+
+                _initOrderingButton.setText(getString(R.string.init_ordering_label));
+                _initOrderingButton.setEnabled(true);
+
+                _freezeTimeButton.setText(getString(R.string.freeze_time_button_text));
+                _freezeTimeButton.setEnabled(false);
+
+                _devicesOrderedLabel.setText("");
+                _devicesReadyLabel.setText("");
+
+                _orderedDevices = 0;
+                _readyDevices = 0;
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) { }
+        });
+
+        builder.show();
     }
 
     /**

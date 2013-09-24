@@ -17,7 +17,7 @@
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Register PicTaker"
+                android:text="@string/register_frame_button_text"
                 android:id="@+id/picRegisterButton"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"/>
@@ -42,7 +42,7 @@
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Submit Pic Order"
+                android:text="@string/submit_frame_order_button_text"
                 android:id="@+id/submitPicOrderButton"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
@@ -60,7 +60,7 @@
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ready!"
+                android:text="@string/ready_button_text"
                 android:id="@+id/picReadyButton"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
