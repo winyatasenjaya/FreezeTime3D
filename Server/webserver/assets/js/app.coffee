@@ -12,9 +12,6 @@ $ ->
         do setupUpdateSocket
         updateStatusField "System ready, waiting to get started."
 
-    updateStatusField = (msg) ->
-        statusField.html statusPrefix + msg
-
     ###
     Setup the websocket connection with the running website
     ###
@@ -26,11 +23,33 @@ $ ->
             switch data.msg
                 when "registerMasterFC" then updateStatusField "Master registered. Next up: Pic Taker ordering."
                 when "initPicTakerOrderFC" then updateStatusField "Pic Taker ordering started. Master will tell you when to submit."
+                when "systemResetFC" then do resetSystem
+                when "freezeTimeInitiatedFC" then updateStatusField "Boom! Time frozen in 3D!"
                 when "picTakerHasRegisteredFC" then do addPicTakerStatusBox
-                when "picTakerHasOrderedFC" then $(gridContainer.children("div").get(data.payload)).find("p").html("Ordered: " + data.payload)
-                when "picTakerIsReadyFC" then $(gridContainer.children("div").get(data.payload)).find("p").html(data.payload + ": Ready")
-                when "picProcessingFC" then $(gridContainer.children("div").get(data.payload)).find("p").html(data.payload + ": Processing")
+                when "picTakerHasOrderedFC" then updatePicTakerStatus data.payload, "Ordered: " + data.payload
+                when "picTakerIsReadyFC" then updatePicTakerStatus data.payload, data.payload + ": Ready"
+                when "picProcessingFC" then updatePicTakerStatus data.payload, data.payload + ": Processing"
                 when "picProcessingCompleteFC" then $(gridContainer.children("div").get(data.payload)).html("<img src='/thumbs_temp/frame-thumb" + data.payload + ".jpg'>")
+
+    ###
+    The reset message has been sent, update the website UI to show correct status
+    ###
+    resetSystem = ->
+        updateStatusField "System Reset. Next up: Pic Taker ordering."
+        $(gridContainer).children("div").html("<p></p>")
+        $(gridContainer).children("div").find("p").html("Registered")
+
+    ###
+    Update the status message for a particular Pic Taker box here on the site
+    ###
+    updatePicTakerStatus = (picTakerNumber, updateString) ->
+        $(gridContainer.children("div").get(picTakerNumber)).find("p").html(updateString)
+
+    ###
+    Update the status field with master-related messages
+    ###
+    updateStatusField = (msg) ->
+        statusField.html statusPrefix + msg
 
     ###
     Add a status box for a connected Pic Taker to the UI

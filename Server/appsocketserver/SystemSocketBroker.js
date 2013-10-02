@@ -79,20 +79,19 @@ module.exports = new Class({
                     var currentSocketInOrder = this.orderedSockets[i];
                     this.sendAppSocketMessage(currentSocketInOrder, this.socketMessages.picTakerMessages.takeFramePic);
                 }
-                //TODO: We want the website UI to respond when the master kicks of the event!
+                this.sendWebsiteClientMessage("freezeTimeInitiatedFC")
 
                 break;
             case this.socketMessages.masterMessages.resetSystem:
+                orderedSockets = {};
+                currentFrameNumber = 0;
+
                 for (var addressKey in this.picSockets) {
                     var currentSocket = this.picSockets[addressKey];
                     this.sendAppSocketMessage(currentSocket, this.socketMessages.picTakerMessages.resetPicTaker);
                 }
 
-                //picSockets: {},
-                //orderedSockets: {},
-                //currentFrameNumber: 0,
-                //TODO: Will need to do some stuff to the website on reset
-
+                this.sendWebsiteClientMessage("systemResetFC")
                 console.log(":::Master::: System has been reset for next frame capture operation");
                 break;
         }

@@ -149,7 +149,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     @Override
     protected void onStop() {
         super.onStop();
-        //TODO: Also, need to kill any open socket connections before leaving?
+        //TODO: Send disconnect message to server so this instance un-registers
 
         if (_systemCamera != null) {
             _systemCamera.release();
@@ -248,6 +248,34 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     };
 
     /**
+     * Reset this PicTaker instance for the next Freeze Time operation
+     */
+    public void resetPicTaker() {
+        //TODO: Possibly reset registration?
+        _picFrameNumber = -1;
+
+        if (_systemCamera != null) {
+            _systemCamera.release();
+        }
+
+        if (_cameraPreviewWindow != null) {
+            _mainLayout.removeView(_cameraPreviewWindow);
+        }
+
+        _registerStepContainer.setVisibility(View.VISIBLE);
+        _submitOrderStepContainer.setVisibility(View.VISIBLE);
+        _readyStepContainer.setVisibility(View.VISIBLE);
+
+        _submitPicOrderButton.setEnabled(false);
+        _submitPicOrderButton.setText(getString(R.string.submit_frame_order_button_text));
+
+        _picReadyButton.setVisibility(View.VISIBLE);
+        _picReadyButton.setEnabled(false);
+
+        _framePreviewImageView.setImageDrawable(null);
+    }
+
+    /**
      * Handle message/payload data from the FT3D server; implemented from the interface
      */
     @Override
@@ -273,28 +301,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
                 //TODO: Give a message to the user how they aren't taking a pic?
             }
         } else if (message.equals("ResetPicTaking")) {
-            //TODO: Possibly reset registration, model etc?
-            _picFrameNumber = -1;
-
-            if (_systemCamera != null) {
-                _systemCamera.release();
-            }
-
-            if (_cameraPreviewWindow != null) {
-                _mainLayout.removeView(_cameraPreviewWindow);
-            }
-
-            _registerStepContainer.setVisibility(View.VISIBLE);
-            _submitOrderStepContainer.setVisibility(View.VISIBLE);
-            _readyStepContainer.setVisibility(View.VISIBLE);
-
-            _submitPicOrderButton.setEnabled(false);
-            _submitPicOrderButton.setText(getString(R.string.submit_frame_order_button_text));
-
-            _picReadyButton.setVisibility(View.VISIBLE);
-            _picReadyButton.setEnabled(false);
-
-            _framePreviewImageView.setImageDrawable(null);
+            resetPicTaker();
         }
     }
 }
