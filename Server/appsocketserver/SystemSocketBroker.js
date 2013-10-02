@@ -132,6 +132,8 @@ module.exports = new Class({
                     delete this.orderedSockets[receivedPayload];
                     this.currentFrameNumber = this.currentFrameNumber - 1;
                 }
+                //TODO: If we want the master app to fully accurately update, we would have to send a message like this:
+                //this.sendAppSocketMessage(ths.masterSocket, "PicTakerHasUnRegistered", {ordered: true, ready: true})
                 this.sendWebsiteClientMessage("picTakerUnRegister", socket.remoteAddress)
 
                 console.log(":::PT::: PicTaker at " + socket.remoteAddress + " has been un-registered from the system");

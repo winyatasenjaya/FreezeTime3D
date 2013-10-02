@@ -157,6 +157,10 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
             } else {
                 _freezeTimeButton.setEnabled(false);
             }
-        } //TODO: Add handling of reset finished message
+        }
+        //else if (message.equals("PicTakerHasUnRegistered")) {
+        //    //TODO: Check the payload to see if the PicTaker was ordered and/or ready
+        //    //TODO: But note, right now, nothing is getting sent to the master app when a PicTaker un-registers
+        //}
     }
 }
