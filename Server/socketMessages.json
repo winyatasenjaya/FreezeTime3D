@@ -18,6 +18,7 @@
         "frameOrderResponse": "FrameOrderResponse",
         "picTakingReady": "PicTakingReady",
         "takeFramePic": "TakeFramePic",
-        "resetPicTaker": "ResetPicTaking"
+        "resetPicTaker": "ResetPicTaking",
+        "unRegisterPicTaker" : "UnRegisterPicTaker"
     }
 }

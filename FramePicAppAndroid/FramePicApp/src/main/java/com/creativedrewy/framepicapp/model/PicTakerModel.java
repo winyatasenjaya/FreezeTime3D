@@ -45,4 +45,12 @@ public class PicTakerModel extends ModelBase {
         sendAppDataEmit("PicTakingReady", String.valueOf(frameNumber));
     }
 
+    /**
+     * Send the message to the server that this app instance is un-registering itself from the PicTakers set
+     * @param frameNumber This app's frame number, if it has one
+     */
+    public void submitUnRegister(int frameNumber) {
+        sendAppDataEmit("UnRegisterPicTaker", String.valueOf(frameNumber));
+    }
+
 }

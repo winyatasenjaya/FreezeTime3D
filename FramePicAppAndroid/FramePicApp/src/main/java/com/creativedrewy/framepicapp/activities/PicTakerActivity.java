@@ -149,7 +149,8 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     @Override
     protected void onStop() {
         super.onStop();
-        //TODO: Send disconnect message to server so this instance un-registers
+
+        _picTakerModel.submitUnRegister(_picFrameNumber);
 
         if (_systemCamera != null) {
             _systemCamera.release();
@@ -251,7 +252,6 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
      * Reset this PicTaker instance for the next Freeze Time operation
      */
     public void resetPicTaker() {
-        //TODO: Possibly reset registration?
         _picFrameNumber = -1;
 
         if (_systemCamera != null) {
@@ -297,8 +297,6 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         } else if (message.equals("TakeFramePic")) {
             if (_systemCamera != null) {
                 _systemCamera.takePicture(null, null, _pictureCallback);
-            } else {
-                //TODO: Give a message to the user how they aren't taking a pic?
             }
         } else if (message.equals("ResetPicTaking")) {
             resetPicTaker();

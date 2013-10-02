@@ -105,7 +105,7 @@ module.exports = new Class({
             case this.socketMessages.picTakerMessages.register:
                 this.picSockets[socket.remoteAddress] = socket;
                 this.sendAppSocketMessage(socket, this.socketMessages.picTakerMessages.registerResponse);
-                this.sendWebsiteClientMessage("picTakerHasRegisteredFC");
+                this.sendWebsiteClientMessage("picTakerHasRegisteredFC", socket.remoteAddress);
 
                 console.log(":::PT::: Registered at address " + socket.remoteAddress);
                 break;
@@ -125,6 +125,16 @@ module.exports = new Class({
                 this.sendWebsiteClientMessage("picTakerIsReadyFC", receivedPayload);
 
                 console.log(":::PT::: PicTaker at " + socket.remoteAddress + " is ready for frame capture");
+                break;
+            case this.socketMessages.picTakerMessages.unRegisterPicTaker:
+                delete this.picSockets[socket.remoteAddress];
+                if (parseInt(receivedPayload) >= 0) {
+                    delete this.orderedSockets[receivedPayload];
+                    this.currentFrameNumber = this.currentFrameNumber - 1;
+                }
+                this.sendWebsiteClientMessage("picTakerUnRegister", socket.remoteAddress)
+
+                console.log(":::PT::: PicTaker at " + socket.remoteAddress + " has been un-registered from the system");
                 break;
         }
     },

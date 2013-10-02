@@ -25,11 +25,12 @@ $ ->
                 when "initPicTakerOrderFC" then updateStatusField "Pic Taker ordering started. Master will tell you when to submit."
                 when "systemResetFC" then do resetSystem
                 when "freezeTimeInitiatedFC" then updateStatusField "Boom! Time frozen in 3D!"
-                when "picTakerHasRegisteredFC" then do addPicTakerStatusBox
+                when "picTakerHasRegisteredFC" then addPicTakerStatusBox data.payload
                 when "picTakerHasOrderedFC" then updatePicTakerStatus data.payload, "Ordered: " + data.payload
                 when "picTakerIsReadyFC" then updatePicTakerStatus data.payload, data.payload + ": Ready"
                 when "picProcessingFC" then updatePicTakerStatus data.payload, data.payload + ": Processing"
                 when "picProcessingCompleteFC" then $(gridContainer.children("div").get(data.payload)).html("<img src='/thumbs_temp/frame-thumb" + data.payload + ".jpg'>")
+                when "picTakerUnRegister" then $("div[pic-taker-ip='" + data.payload + "']").remove()
 
     ###
     The reset message has been sent, update the website UI to show correct status
@@ -54,9 +55,10 @@ $ ->
     ###
     Add a status box for a connected Pic Taker to the UI
     ###
-    addPicTakerStatusBox = ->
+    addPicTakerStatusBox = (picTakerIP) ->
         picTakerDiv = document.createElement 'div'
         picTakerDiv.className = "pic-taker-cell"
+        picTakerDiv.setAttribute("pic-taker-ip", picTakerIP)
         labelP = document.createElement 'p'
         labelP.innerHTML = 'Registered'
 
