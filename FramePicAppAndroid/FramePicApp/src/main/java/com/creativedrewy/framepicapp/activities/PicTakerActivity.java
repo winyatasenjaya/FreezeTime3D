@@ -150,9 +150,11 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     protected void onStop() {
         super.onStop();
 
-        //TODO: If we want the master app to accurately update ordered and ready PicTaker counts, we
-        //TODO: would need to send along a "isReady" boolean value along with this call
-        _picTakerModel.submitUnRegister(_picFrameNumber);
+        if (_picTakerModel != null) {
+            //TODO: If we want the master app to accurately update ordered and ready PicTaker counts, we
+            //TODO: would need to send along a "isReady" boolean value along with this call
+            _picTakerModel.submitUnRegister(_picFrameNumber);
+        }
 
         if (_systemCamera != null) {
             _systemCamera.release();
