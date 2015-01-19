@@ -14,9 +14,8 @@ android {
         def jsonFile = new File("../Server/socketMessages.json")
         def jsonMessages = new JsonSlurper().parseText(jsonFile.text)
 
-        for (i in 0..9) {
-            buildConfigField("String", "MyVar", jsonMessages.masterMessages.register)
-            println(jsonMessages.masterMessages.register)
+        jsonMessages.each {
+            key, val -> buildConfigField("String", key, "\"" + val + "\"")
         }
     }
 
