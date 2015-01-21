@@ -33,5 +33,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    //https://github.com/davidgatti/dgCam
     compile 'com.koushikdutta.async:androidasync:1.1.6'
+    compile 'com.jakewharton:butterknife:6.0.0'
 }

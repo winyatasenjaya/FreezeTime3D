@@ -58,19 +58,24 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 /**
  * Activity/view for apps that will operate as PicTakers
  */
 public class PicTakerActivity extends Activity implements IServerMessageHandler {
-    private Button _picRegisterButton;
-    private Button _submitPicOrderButton;
-    private Button _picReadyButton;
-    private EditText _serverAddrEditText;
-    private LinearLayout _mainLayout;
-    private RelativeLayout _registerStepContainer;
-    private RelativeLayout _submitOrderStepContainer;
-    private RelativeLayout _readyStepContainer;
-    private ImageView _framePreviewImageView;
+    @InjectView(R.id.picTakerMainLinearLayout) private LinearLayout _mainLayout;
+    @InjectView(R.id.picRegisterButton) private Button _picRegisterButton;
+    @InjectView(R.id.submitPicOrderButton) private Button _submitPicOrderButton;
+    @InjectView(R.id.picReadyButton) private Button _picReadyButton;
+    @InjectView(R.id.serverAddrEditText) private EditText _serverAddrEditText;
+    @InjectView(R.id.registerStepContainer) private RelativeLayout _registerStepContainer;
+    @InjectView(R.id.submitOrderStepContainer) private RelativeLayout _submitOrderStepContainer;
+    @InjectView(R.id.readyStepContainer) private RelativeLayout _readyStepContainer;
+    @InjectView(R.id.framePreviewImageView) private ImageView _framePreviewImageView;
+
     private PicTakerModel _picTakerModel;
     private int _picFrameNumber = -1;
     private SharedPreferences _appPrefs;
@@ -83,57 +88,9 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pictaker_layout);
+        ButterKnife.inject(this);
 
-        _mainLayout = (LinearLayout) findViewById(R.id.picTakerMainLinearLayout);
-
-        _picRegisterButton = (Button) findViewById(R.id.picRegisterButton);
-        _submitPicOrderButton = (Button) findViewById(R.id.submitPicOrderButton);
-        _picReadyButton = (Button) findViewById(R.id.picReadyButton);
-        _serverAddrEditText = (EditText) findViewById(R.id.serverAddrEditText);
-
-        _registerStepContainer = (RelativeLayout) findViewById(R.id.registerStepContainer);
-        _submitOrderStepContainer = (RelativeLayout) findViewById(R.id.submitOrderStepContainer);
-        _readyStepContainer = (RelativeLayout) findViewById(R.id.readyStepContainer);
-
-        _framePreviewImageView = (ImageView) findViewById(R.id.framePreviewImageView);
         _framePreviewImageView.setVisibility(View.GONE);
-
-        _picRegisterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String ipAddr = _serverAddrEditText.getText().toString();
-
-                SharedPreferences.Editor editor = _appPrefs.edit();
-                editor.putString(PicTakerModel.PICTAKER_HOST_IP_PREF, ipAddr);
-                editor.commit();
-
-                _picTakerModel = new PicTakerModel(ipAddr, PicTakerActivity.this);
-
-                InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(PicTakerActivity.this.getCurrentFocus().getWindowToken(), 0);
-            }
-        });
-
-        _submitPicOrderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                _picTakerModel.submitOrder();
-            }
-        });
-
-        _picReadyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                _picTakerModel.submitReady(_picFrameNumber);
-
-                _registerStepContainer.setVisibility(View.GONE);
-                _submitOrderStepContainer.setVisibility(View.GONE);
-                _readyStepContainer.setVisibility(View.GONE);
-
-                initializeCamera();
-            }
-        });
-
         _appPrefs = getPreferences(MODE_PRIVATE);
     }
 
@@ -160,6 +117,36 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         if (_systemCamera != null) {
             _systemCamera.release();
         }
+    }
+
+    @OnClick(R.id.picRegisterButton)
+    void startPicRegister() {
+        String ipAddr = _serverAddrEditText.getText().toString();
+
+        SharedPreferences.Editor editor = _appPrefs.edit();
+        editor.putString(PicTakerModel.PICTAKER_HOST_IP_PREF, ipAddr);
+        editor.commit();
+
+        _picTakerModel = new PicTakerModel(ipAddr, PicTakerActivity.this);
+
+        InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(PicTakerActivity.this.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @OnClick(R.id.submitPicOrderButton)
+    void submitPicOrder() {
+        _picTakerModel.submitOrder();
+    }
+
+    @OnClick(R.id.picReadyButton)
+    void picTakerReady() {
+        _picTakerModel.submitReady(_picFrameNumber);
+
+        _registerStepContainer.setVisibility(View.GONE);
+        _submitOrderStepContainer.setVisibility(View.GONE);
+        _readyStepContainer.setVisibility(View.GONE);
+
+        initializeCamera();
     }
 
     /**
