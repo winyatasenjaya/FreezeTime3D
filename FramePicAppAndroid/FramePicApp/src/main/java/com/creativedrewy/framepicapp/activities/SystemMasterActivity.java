@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.creativedrewy.framepicapp.BuildConfig;
 import com.creativedrewy.framepicapp.R;
 import com.creativedrewy.framepicapp.model.IServerMessageHandler;
 import com.creativedrewy.framepicapp.model.SystemMasterModel;
@@ -139,16 +140,16 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
      */
     @Override
     public void handleServerMessage(String message, String payload) {
-        if (message.equals("RegisterMasterResponse")) {
+        if (message.equals(BuildConfig.master_registerResponse)) {
             _masterRegisterButton.setEnabled(false);
             _masterRegisterButton.setText("Is master");
 
             _resetSystemButton.setEnabled(true);
             _initOrderingButton.setEnabled(true);
-        } else if (message.equals("PicTakerOrderUpdate")) {
+        } else if (message.equals(BuildConfig.master_picTakerOrderUpdate)) {
             _orderedDevices++;
             _devicesOrderedLabel.setText(_orderedDevices + " device(s) ordered");
-        } else if (message.equals("PicTakerFrameReadyUpdate")) {
+        } else if (message.equals(BuildConfig.master_picTakerFrameReadyUpdate)) {
             _readyDevices++;
             _devicesReadyLabel.setText(_readyDevices + " device(s) ready");
 

@@ -285,25 +285,25 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
      */
     @Override
     public void handleServerMessage(String message, String payload) {
-        if (message.equals(BuildConfig.registerResponse)) {
+        if (message.equals(BuildConfig.pic_registerResponse)) {
             _picRegisterButton.setText("Registered!");
             _picRegisterButton.setEnabled(false);
 
             _submitPicOrderButton.setText("Waiting for master...");
-        } else if (message.equals(BuildConfig.serverOrderingStart)) {
+        } else if (message.equals(BuildConfig.pic_serverOrderingStart)) {
             _submitPicOrderButton.setEnabled(true);
             _submitPicOrderButton.setText("Submit Order");
-        } else if (message.equals(BuildConfig.frameOrderResponse)) {
+        } else if (message.equals(BuildConfig.pic_frameOrderResponse)) {
             _picFrameNumber = Integer.valueOf(payload);
             _picReadyButton.setEnabled(true);
 
             _submitPicOrderButton.setText("Frame Number: " + _picFrameNumber);
             _submitPicOrderButton.setEnabled(false);
-        } else if (message.equals(BuildConfig.takeFramePic)) {
+        } else if (message.equals(BuildConfig.pic_takeFramePic)) {
             if (_systemCamera != null) {
                 _systemCamera.takePicture(null, null, _pictureCallback);
             }
-        } else if (message.equals(BuildConfig.resetPicTaker)) {
+        } else if (message.equals(BuildConfig.pic_resetPicTaker)) {
             resetPicTaker();
         }
     }

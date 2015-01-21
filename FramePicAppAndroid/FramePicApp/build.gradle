@@ -15,7 +15,11 @@ android {
         def jsonMessages = new JsonSlurper().parseText(jsonFile.text)
 
         jsonMessages.picTakerMessages.each {
-            key, val -> buildConfigField("String", key, "\"" + val + "\"")
+            key, val -> buildConfigField("String", "pic_" + key, "\"" + val + "\"")
+        }
+
+        jsonMessages.masterMessages.each {
+            key, val -> buildConfigField("String", "master_" + key, "\"" + val + "\"")
         }
     }
 
