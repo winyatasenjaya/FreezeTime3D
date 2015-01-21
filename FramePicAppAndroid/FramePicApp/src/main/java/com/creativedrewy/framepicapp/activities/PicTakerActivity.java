@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.creativedrewy.framepicapp.BuildConfig;
 import com.creativedrewy.framepicapp.R;
 import com.creativedrewy.framepicapp.camera.CameraPreview;
 import com.creativedrewy.framepicapp.model.IServerMessageHandler;
@@ -284,25 +285,25 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
      */
     @Override
     public void handleServerMessage(String message, String payload) {
-        if (message.equals("RegisterPicTakerResponse")) {
+        if (message.equals(BuildConfig.registerResponse)) {
             _picRegisterButton.setText("Registered!");
             _picRegisterButton.setEnabled(false);
 
             _submitPicOrderButton.setText("Waiting for master...");
-        } else if (message.equals("ServerReadyForOrder")) {
+        } else if (message.equals(BuildConfig.serverOrderingStart)) {
             _submitPicOrderButton.setEnabled(true);
             _submitPicOrderButton.setText("Submit Order");
-        } else if (message.equals("FrameOrderResponse")) {
+        } else if (message.equals(BuildConfig.frameOrderResponse)) {
             _picFrameNumber = Integer.valueOf(payload);
             _picReadyButton.setEnabled(true);
 
             _submitPicOrderButton.setText("Frame Number: " + _picFrameNumber);
             _submitPicOrderButton.setEnabled(false);
-        } else if (message.equals("TakeFramePic")) {
+        } else if (message.equals(BuildConfig.takeFramePic)) {
             if (_systemCamera != null) {
                 _systemCamera.takePicture(null, null, _pictureCallback);
             }
-        } else if (message.equals("ResetPicTaking")) {
+        } else if (message.equals(BuildConfig.resetPicTaker)) {
             resetPicTaker();
         }
     }

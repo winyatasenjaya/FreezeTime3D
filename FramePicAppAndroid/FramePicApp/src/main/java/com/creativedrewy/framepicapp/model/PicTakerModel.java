@@ -2,6 +2,7 @@ package com.creativedrewy.framepicapp.model;
 
 import android.app.Activity;
 
+import com.creativedrewy.framepicapp.BuildConfig;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
@@ -25,7 +26,7 @@ public class PicTakerModel extends ModelBase {
         super(ipAddress, handlerActivity);
 
         _roleString = "picTaker";
-        _registerMessage = "RegisterPicTaker";
+        _registerMessage = BuildConfig.register;
 
         initConnection();
     }
@@ -34,7 +35,7 @@ public class PicTakerModel extends ModelBase {
      * Send the message to the server that this app instance should be put in frame order
      */
     public void submitOrder() {
-        sendAppDataEmit("RequestingFrameOrder");
+        sendAppDataEmit(BuildConfig.requestFrameOrder);
     }
 
     /**
@@ -42,7 +43,7 @@ public class PicTakerModel extends ModelBase {
      * @param frameNumber This app's frame number
      */
     public void submitReady(int frameNumber) {
-        sendAppDataEmit("PicTakingReady", String.valueOf(frameNumber));
+        sendAppDataEmit(BuildConfig.picTakingReady, String.valueOf(frameNumber));
     }
 
     /**
@@ -50,7 +51,7 @@ public class PicTakerModel extends ModelBase {
      * @param frameNumber This app's frame number, if it has one
      */
     public void submitUnRegister(int frameNumber) {
-        sendAppDataEmit("UnRegisterPicTaker", String.valueOf(frameNumber));
+        sendAppDataEmit(BuildConfig.unRegisterPicTaker, String.valueOf(frameNumber));
     }
 
 }
