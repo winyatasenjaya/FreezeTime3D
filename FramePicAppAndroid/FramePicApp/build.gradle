@@ -1,9 +1,25 @@
 import groovy.json.JsonSlurper
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
+    }
+}
 
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.1"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         minSdkVersion 15
@@ -34,6 +50,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //https://github.com/davidgatti/dgCam
+    //'me.tatarka:gradle-retrolambda:2.5.0'
     compile 'com.koushikdutta.async:androidasync:1.1.6'
     compile 'com.jakewharton:butterknife:6.0.0'
 }

@@ -45,38 +45,21 @@ public class ServiceBase {
         SocketIORequest req = new SocketIORequest("http://" + _serverIP + ":7373");
         req.setTimeout(2500);
 
-        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), req, new ConnectCallback() {
-            @Override
-            public void onConnectCompleted(Exception ex, SocketIOClient socketIOClient) {
-                if (ex != null) {
-                    _handlerActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(_handlerActivity, _handlerActivity.getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    _globalSocketIOClient = socketIOClient;
+        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), req, (ex, socketIOClient) -> {
+            if (ex != null) {
+                _handlerActivity.runOnUiThread(() -> Toast.makeText(_handlerActivity, _handlerActivity.getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show());
+            } else {
+                _globalSocketIOClient = socketIOClient;
 
-                    socketIOClient.on("ServerDataEmitEvent", new EventCallback() {
-                        @Override
-                        public void onEvent(JSONArray jsonArray, Acknowledge acknowledge) {
-                            _serverReturnJSON = jsonArray.optJSONObject(0);
+                socketIOClient.on("ServerDataEmitEvent", (jsonArray, acknowledge) -> {
+                    _serverReturnJSON = jsonArray.optJSONObject(0);
 
-                            if (_serverReturnJSON != null) {
-                                _handlerActivity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        //We also know that all passed in activities will implement the interface
-                                        ((IServerMessageHandler) _handlerActivity).handleServerMessage(_serverReturnJSON.optString("msg"), _serverReturnJSON.optString("payload"));
-                                    }
-                                });
-                            }
-                        }
-                    });
+                    if (_serverReturnJSON != null) {
+                        _handlerActivity.runOnUiThread(() -> ((IServerMessageHandler) _handlerActivity).handleServerMessage(_serverReturnJSON.optString("msg"), _serverReturnJSON.optString("payload")));
+                    }
+                });
 
-                    sendAppDataEmit(_registerMessage);
-                }
+                sendAppDataEmit(_registerMessage);
             }
         });
     }
@@ -93,9 +76,7 @@ public class ServiceBase {
             messageData.put("role", _roleString);
             messageData.put("message", message);
             messageData.put("payload", payload);
-        } catch (Exception e) {
-
-        }
+        } catch (Exception e) { }
 
         _globalSocketIOClient.emit("AppDataEmitEvent", new JSONArray().put(messageData));
     }
