@@ -51,6 +51,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //https://github.com/davidgatti/dgCam
     //'me.tatarka:gradle-retrolambda:2.5.0'
+    compile 'com.netflix.rxjava:rxjava-android:0.20.5'
     compile 'com.koushikdutta.async:androidasync:1.1.6'
     compile 'com.jakewharton:butterknife:6.0.0'
 }

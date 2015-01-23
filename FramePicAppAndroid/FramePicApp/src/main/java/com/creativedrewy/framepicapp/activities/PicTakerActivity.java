@@ -40,6 +40,8 @@ import java.util.Date;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Activity/view for apps that will operate as PicTakers
@@ -107,6 +109,12 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         editor.commit();
 
         _picTakerService = new PicTakerService(ipAddr, PicTakerActivity.this);
+        _picTakerService.initConnection()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(msg -> {
+                    Toast.makeText(this, "Here is your message: " + msg, Toast.LENGTH_LONG).show();
+                });
 
         InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(PicTakerActivity.this.getCurrentFocus().getWindowToken(), 0);

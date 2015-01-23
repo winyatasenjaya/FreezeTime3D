@@ -19,7 +19,7 @@ public class PicTakerService extends ServiceBase {
         _roleString = "picTaker";
         _registerMessage = BuildConfig.pic_register;
 
-        initConnection();
+        //initConnection();
     }
 
     /**

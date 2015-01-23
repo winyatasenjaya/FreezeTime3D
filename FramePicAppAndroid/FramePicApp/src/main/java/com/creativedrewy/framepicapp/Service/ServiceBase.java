@@ -14,6 +14,9 @@ import com.koushikdutta.async.http.socketio.SocketIORequest;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import rx.Observable;
+import rx.Subscriber;
+
 /**
  * Functionality related to all models in the application; provides uniform server interaction
  */
@@ -41,26 +44,29 @@ public class ServiceBase {
     /**
      * Startup the connection to the FT3D socket server
      */
-    public void initConnection() {
+    public Observable<String> initConnection() {
         SocketIORequest req = new SocketIORequest("http://" + _serverIP + ":7373");
         req.setTimeout(2500);
 
-        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), req, (ex, socketIOClient) -> {
-            if (ex != null) {
-                _handlerActivity.runOnUiThread(() -> Toast.makeText(_handlerActivity, _handlerActivity.getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show());
-            } else {
-                _globalSocketIOClient = socketIOClient;
+        return Observable.create((Subscriber<? super String> subscriber) -> {
+            SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), req, (ex, socketIOClient) -> {
+                if (ex != null) {
+                    _handlerActivity.runOnUiThread(() -> Toast.makeText(_handlerActivity, _handlerActivity.getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show());
+                } else {
+                    _globalSocketIOClient = socketIOClient;
 
-                socketIOClient.on("ServerDataEmitEvent", (jsonArray, acknowledge) -> {
-                    _serverReturnJSON = jsonArray.optJSONObject(0);
+                    socketIOClient.on("ServerDataEmitEvent", (jsonArray, acknowledge) -> {
+                        _serverReturnJSON = jsonArray.optJSONObject(0);
 
-                    if (_serverReturnJSON != null) {
-                        _handlerActivity.runOnUiThread(() -> ((IServerMessageHandler) _handlerActivity).handleServerMessage(_serverReturnJSON.optString("msg"), _serverReturnJSON.optString("payload")));
-                    }
-                });
+                        if (_serverReturnJSON != null) {
+                            //_handlerActivity.runOnUiThread(() -> ((IServerMessageHandler) _handlerActivity).handleServerMessage(_serverReturnJSON.optString("msg"), _serverReturnJSON.optString("payload")));
+                            subscriber.onNext(_serverReturnJSON.optString("msg"));
+                        }
+                    });
 
-                sendAppDataEmit(_registerMessage);
-            }
+                    sendAppDataEmit(_registerMessage);
+                }
+            });
         });
     }
 
