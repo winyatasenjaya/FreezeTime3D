@@ -1,26 +1,16 @@
 package com.creativedrewy.framepicapp.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
-import android.media.ExifInterface;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Environment;
-import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
-import android.view.Menu;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,30 +23,19 @@ import com.creativedrewy.framepicapp.BuildConfig;
 import com.creativedrewy.framepicapp.R;
 import com.creativedrewy.framepicapp.camera.CameraPreview;
 import com.creativedrewy.framepicapp.model.IServerMessageHandler;
-import com.creativedrewy.framepicapp.model.PicTakerModel;
-import com.creativedrewy.framepicapp.model.SystemMasterModel;
+import com.creativedrewy.framepicapp.model.PicTakerService;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpPost;
-import com.koushikdutta.async.http.AsyncHttpRequest;
-import com.koushikdutta.async.http.AsyncHttpResponse;
 import com.koushikdutta.async.http.MultipartFormDataBody;
-import com.koushikdutta.async.http.Part;
-import com.koushikdutta.async.http.callback.HttpConnectCallback;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -76,7 +55,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     @InjectView(R.id.readyStepContainer) private RelativeLayout _readyStepContainer;
     @InjectView(R.id.framePreviewImageView) private ImageView _framePreviewImageView;
 
-    private PicTakerModel _picTakerModel;
+    private PicTakerService _picTakerService;
     private int _picFrameNumber = -1;
     private SharedPreferences _appPrefs;
     private Camera _systemCamera = null;
@@ -98,7 +77,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     protected void onStart() {
         super.onStart();
 
-        String ipString = _appPrefs.getString(PicTakerModel.PICTAKER_HOST_IP_PREF, "");
+        String ipString = _appPrefs.getString(PicTakerService.PICTAKER_HOST_IP_PREF, "");
         if (!ipString.equals("")) {
             _serverAddrEditText.setText(ipString);
         }
@@ -108,10 +87,10 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     protected void onStop() {
         super.onStop();
 
-        if (_picTakerModel != null) {
+        if (_picTakerService != null) {
             //TODO: If we want the master app to accurately update ordered and ready PicTaker counts, we
             //TODO: would need to send along a "isReady" boolean value along with this call
-            _picTakerModel.submitUnRegister(_picFrameNumber);
+            _picTakerService.submitUnRegister(_picFrameNumber);
         }
 
         if (_systemCamera != null) {
@@ -124,10 +103,10 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         String ipAddr = _serverAddrEditText.getText().toString();
 
         SharedPreferences.Editor editor = _appPrefs.edit();
-        editor.putString(PicTakerModel.PICTAKER_HOST_IP_PREF, ipAddr);
+        editor.putString(PicTakerService.PICTAKER_HOST_IP_PREF, ipAddr);
         editor.commit();
 
-        _picTakerModel = new PicTakerModel(ipAddr, PicTakerActivity.this);
+        _picTakerService = new PicTakerService(ipAddr, PicTakerActivity.this);
 
         InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(PicTakerActivity.this.getCurrentFocus().getWindowToken(), 0);
@@ -135,12 +114,12 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
 
     @OnClick(R.id.submitPicOrderButton)
     void submitPicOrder() {
-        _picTakerModel.submitOrder();
+        _picTakerService.submitOrder();
     }
 
     @OnClick(R.id.picReadyButton)
     void picTakerReady() {
-        _picTakerModel.submitReady(_picFrameNumber);
+        _picTakerService.submitReady(_picFrameNumber);
 
         _registerStepContainer.setVisibility(View.GONE);
         _submitOrderStepContainer.setVisibility(View.GONE);
@@ -200,7 +179,7 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
                 Log.d("DG_DEBUG", "Error accessing file: " + e.getMessage());
             }
 
-            AsyncHttpPost reqPost = new AsyncHttpPost("http://" + _picTakerModel.getServerIP() + ":7373/fileUpload");
+            AsyncHttpPost reqPost = new AsyncHttpPost("http://" + _picTakerService.getServerIP() + ":7373/fileUpload");
             MultipartFormDataBody body = new MultipartFormDataBody();
             body.addFilePart("framePic", pictureFile);
             body.addStringPart("frameNumber", String.valueOf(_picFrameNumber));

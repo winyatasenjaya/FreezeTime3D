@@ -7,13 +7,13 @@ import com.creativedrewy.framepicapp.BuildConfig;
 /**
  * Model class for the PicTaker functionality
  */
-public class PicTakerModel extends ServiceBase {
+public class PicTakerService extends ServiceBase {
     public final static String PICTAKER_HOST_IP_PREF = "pictakerHostIPPref";
 
     /**
      * Constructor
      */
-    public PicTakerModel(String ipAddress, Activity handlerActivity) {
+    public PicTakerService(String ipAddress, Activity handlerActivity) {
         super(ipAddress, handlerActivity);
 
         _roleString = "picTaker";

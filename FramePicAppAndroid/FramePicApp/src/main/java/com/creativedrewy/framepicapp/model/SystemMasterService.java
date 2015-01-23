@@ -7,13 +7,13 @@ import com.creativedrewy.framepicapp.BuildConfig;
 /**
  * Model functionality for the app that will act as the system master
  */
-public class SystemMasterModel extends ServiceBase {
+public class SystemMasterService extends ServiceBase {
     public final static String SYSTEM_HOST_IP_PREF = "systemHostIPPref";
 
     /**
      * Constructor
      */
-    public SystemMasterModel(String ipAddress, Activity handlerActivity) {
+    public SystemMasterService(String ipAddress, Activity handlerActivity) {
         super(ipAddress, handlerActivity);
 
         _roleString = "master";
