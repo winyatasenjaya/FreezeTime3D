@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.creativedrewy.framepicapp.BuildConfig;
 import com.creativedrewy.framepicapp.R;
-import com.creativedrewy.framepicapp.model.IServerMessageHandler;
-import com.creativedrewy.framepicapp.model.SystemMasterService;
+import com.creativedrewy.framepicapp.Service.IServerMessageHandler;
+import com.creativedrewy.framepicapp.Service.SystemMasterService;
 
 /**
  * Activity/view for the app that will act as the FT3D master

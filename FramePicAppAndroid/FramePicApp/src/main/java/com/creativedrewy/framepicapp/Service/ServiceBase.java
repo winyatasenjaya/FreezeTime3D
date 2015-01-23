@@ -1,22 +1,18 @@
-package com.creativedrewy.framepicapp.model;
+package com.creativedrewy.framepicapp.Service;
 
 import android.app.Activity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.creativedrewy.framepicapp.R;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
-import com.koushikdutta.async.http.socketio.ErrorCallback;
 import com.koushikdutta.async.http.socketio.EventCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
 import com.koushikdutta.async.http.socketio.SocketIORequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.concurrent.Future;
 
 /**
  * Functionality related to all models in the application; provides uniform server interaction

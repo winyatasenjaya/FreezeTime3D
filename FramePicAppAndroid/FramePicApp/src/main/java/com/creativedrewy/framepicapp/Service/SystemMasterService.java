@@ -1,4 +1,4 @@
-package com.creativedrewy.framepicapp.model;
+package com.creativedrewy.framepicapp.Service;
 
 import android.app.Activity;
 

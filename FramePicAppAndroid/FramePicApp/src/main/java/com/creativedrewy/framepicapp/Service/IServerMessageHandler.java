@@ -1,4 +1,4 @@
-package com.creativedrewy.framepicapp.model;
+package com.creativedrewy.framepicapp.Service;
 
 /**
  * Interface for classes that want to work with message/payload data from the FT3D server
