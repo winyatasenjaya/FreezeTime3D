@@ -1,4 +1,4 @@
-package com.creativedrewy.framepicapp.Service;
+package com.creativedrewy.framepicapp.service;
 
 import android.app.Activity;
 import android.widget.Toast;
