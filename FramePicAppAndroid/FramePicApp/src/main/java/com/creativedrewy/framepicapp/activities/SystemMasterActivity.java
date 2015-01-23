@@ -16,17 +16,22 @@ import com.creativedrewy.framepicapp.R;
 import com.creativedrewy.framepicapp.service.IServerMessageHandler;
 import com.creativedrewy.framepicapp.service.SystemMasterService;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 /**
  * Activity/view for the app that will act as the FT3D master
  */
 public class SystemMasterActivity extends Activity implements IServerMessageHandler {
-    private Button _masterRegisterButton;
-    private Button _initOrderingButton;
-    private Button _freezeTimeButton;
-    private Button _resetSystemButton;
-    private EditText _serverAddrEditText;
-    private TextView _devicesReadyLabel;
-    private TextView _devicesOrderedLabel;
+    @InjectView(R.id.masterRegisterButton) protected Button _masterRegisterButton;
+    @InjectView(R.id.initOrderingButton) protected Button _initOrderingButton;
+    @InjectView(R.id.freezeTimeButton) protected Button _freezeTimeButton;
+    @InjectView(R.id.resetSystemButton) protected Button _resetSystemButton;
+    @InjectView(R.id.serverAddrEditText) protected EditText _serverAddrEditText;
+    @InjectView(R.id.devicesReadyLabel) protected TextView _devicesReadyLabel;
+    @InjectView(R.id.devicesOrderedLabel) protected TextView _devicesOrderedLabel;
+
     private SystemMasterService _masterModel;
     private int _orderedDevices = 0;
     private int _readyDevices = 0;
@@ -36,58 +41,7 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.system_master_layout);
-
-        _masterRegisterButton = (Button) findViewById(R.id.masterRegisterButton);
-        _initOrderingButton = (Button) findViewById(R.id.initOrderingButton);
-        _freezeTimeButton = (Button) findViewById(R.id.freezeTimeButton);
-        _resetSystemButton = (Button) findViewById(R.id.resetSystemButton);
-
-        _serverAddrEditText = (EditText) findViewById(R.id.serverAddrEditText);
-        _devicesReadyLabel = (TextView) findViewById(R.id.devicesReadyLabel);
-        _devicesOrderedLabel = (TextView) findViewById(R.id.devicesOrderedLabel);
-
-        _masterRegisterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String ipAddr = _serverAddrEditText.getText().toString();
-
-                SharedPreferences.Editor editor = _appPrefs.edit();
-                editor.putString(SystemMasterService.SYSTEM_HOST_IP_PREF, ipAddr);
-                editor.commit();
-
-                _masterModel = new SystemMasterService(ipAddr, SystemMasterActivity.this);
-
-                InputMethodManager inputMethodManager = (InputMethodManager)  SystemMasterActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(SystemMasterActivity.this.getCurrentFocus().getWindowToken(), 0);
-            }
-        });
-
-        _initOrderingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                _masterModel.sendInitOrder();
-
-                _initOrderingButton.setText("Ordering...");
-                _initOrderingButton.setEnabled(false);
-            }
-        });
-
-        _freezeTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                _masterModel.sendFreezeTime();
-
-                _freezeTimeButton.setText("Boom!");
-                _freezeTimeButton.setEnabled(false);
-            }
-        });
-
-        _resetSystemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resetFreezeOperation();
-            }
-        });
+        ButterKnife.inject(this);
 
         _appPrefs = getPreferences(MODE_PRIVATE);
     }
@@ -100,6 +54,41 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
         if (!ipString.equals("")) {
             _serverAddrEditText.setText(ipString);
         }
+    }
+
+    @OnClick(R.id.masterRegisterButton)
+    void onMasterRegisterClick() {
+        String ipAddr = _serverAddrEditText.getText().toString();
+
+        SharedPreferences.Editor editor = _appPrefs.edit();
+        editor.putString(SystemMasterService.SYSTEM_HOST_IP_PREF, ipAddr);
+        editor.commit();
+
+        _masterModel = new SystemMasterService(ipAddr, SystemMasterActivity.this);
+
+        InputMethodManager inputMethodManager = (InputMethodManager)  SystemMasterActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(SystemMasterActivity.this.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @OnClick(R.id.initOrderingButton)
+    void onInitOrderingClick() {
+        _masterModel.sendInitOrder();
+
+        _initOrderingButton.setText("Ordering...");
+        _initOrderingButton.setEnabled(false);
+    }
+
+    @OnClick(R.id.freezeTimeButton)
+    void onFreezeTimeClick() {
+        _masterModel.sendFreezeTime();
+
+        _freezeTimeButton.setText("Boom!");
+        _freezeTimeButton.setEnabled(false);
+    }
+
+    @OnClick(R.id.resetSystemButton)
+    void onResetSystemClick() {
+        resetFreezeOperation();
     }
 
     /**

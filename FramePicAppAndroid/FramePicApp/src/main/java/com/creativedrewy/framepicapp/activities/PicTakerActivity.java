@@ -45,15 +45,15 @@ import butterknife.OnClick;
  * Activity/view for apps that will operate as PicTakers
  */
 public class PicTakerActivity extends Activity implements IServerMessageHandler {
-    @InjectView(R.id.picTakerMainLinearLayout) private LinearLayout _mainLayout;
-    @InjectView(R.id.picRegisterButton) private Button _picRegisterButton;
-    @InjectView(R.id.submitPicOrderButton) private Button _submitPicOrderButton;
-    @InjectView(R.id.picReadyButton) private Button _picReadyButton;
-    @InjectView(R.id.serverAddrEditText) private EditText _serverAddrEditText;
-    @InjectView(R.id.registerStepContainer) private RelativeLayout _registerStepContainer;
-    @InjectView(R.id.submitOrderStepContainer) private RelativeLayout _submitOrderStepContainer;
-    @InjectView(R.id.readyStepContainer) private RelativeLayout _readyStepContainer;
-    @InjectView(R.id.framePreviewImageView) private ImageView _framePreviewImageView;
+    @InjectView(R.id.picTakerMainLinearLayout) protected LinearLayout _mainLayout;
+    @InjectView(R.id.picRegisterButton) protected Button _picRegisterButton;
+    @InjectView(R.id.submitPicOrderButton) protected Button _submitPicOrderButton;
+    @InjectView(R.id.picReadyButton) protected Button _picReadyButton;
+    @InjectView(R.id.serverAddrEditText) protected EditText _serverAddrEditText;
+    @InjectView(R.id.registerStepContainer) protected RelativeLayout _registerStepContainer;
+    @InjectView(R.id.submitOrderStepContainer) protected RelativeLayout _submitOrderStepContainer;
+    @InjectView(R.id.readyStepContainer) protected RelativeLayout _readyStepContainer;
+    @InjectView(R.id.framePreviewImageView) protected ImageView _framePreviewImageView;
 
     private PicTakerService _picTakerService;
     private int _picFrameNumber = -1;
