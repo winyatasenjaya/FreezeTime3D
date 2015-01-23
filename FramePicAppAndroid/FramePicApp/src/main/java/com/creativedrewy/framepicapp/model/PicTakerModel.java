@@ -3,20 +3,11 @@ package com.creativedrewy.framepicapp.model;
 import android.app.Activity;
 
 import com.creativedrewy.framepicapp.BuildConfig;
-import com.koushikdutta.async.http.AsyncHttpClient;
-import com.koushikdutta.async.http.socketio.Acknowledge;
-import com.koushikdutta.async.http.socketio.ConnectCallback;
-import com.koushikdutta.async.http.socketio.EventCallback;
-import com.koushikdutta.async.http.socketio.JSONCallback;
-import com.koushikdutta.async.http.socketio.SocketIOClient;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Model class for the PicTaker functionality
  */
-public class PicTakerModel extends ModelBase {
+public class PicTakerModel extends ServiceBase {
     public final static String PICTAKER_HOST_IP_PREF = "pictakerHostIPPref";
 
     /**

@@ -7,7 +7,7 @@ import com.creativedrewy.framepicapp.BuildConfig;
 /**
  * Model functionality for the app that will act as the system master
  */
-public class SystemMasterModel extends ModelBase {
+public class SystemMasterModel extends ServiceBase {
     public final static String SYSTEM_HOST_IP_PREF = "systemHostIPPref";
 
     /**

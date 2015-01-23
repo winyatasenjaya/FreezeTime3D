@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 /**
  * Functionality related to all models in the application; provides uniform server interaction
  */
-public class ModelBase {
+public class ServiceBase {
     protected SocketIOClient _globalSocketIOClient;
     protected Activity _handlerActivity;
     protected String _serverIP;
@@ -37,7 +37,7 @@ public class ModelBase {
      * @param ipAddress IP address to FT3D socket server
      * @param handlerActivity We have to pass in an activity so that we can broker thread stuff to UI
      */
-    public ModelBase(String ipAddress, Activity handlerActivity){
+    public ServiceBase(String ipAddress, Activity handlerActivity){
         _serverIP = ipAddress;
         _handlerActivity = handlerActivity;
     }
