@@ -26,7 +26,7 @@ public class PicTakerModel extends ModelBase {
         super(ipAddress, handlerActivity);
 
         _roleString = "picTaker";
-        _registerMessage = BuildConfig.register;
+        _registerMessage = BuildConfig.pic_register;
 
         initConnection();
     }
@@ -35,7 +35,7 @@ public class PicTakerModel extends ModelBase {
      * Send the message to the server that this app instance should be put in frame order
      */
     public void submitOrder() {
-        sendAppDataEmit(BuildConfig.requestFrameOrder);
+        sendAppDataEmit(BuildConfig.pic_requestFrameOrder);
     }
 
     /**
@@ -43,7 +43,7 @@ public class PicTakerModel extends ModelBase {
      * @param frameNumber This app's frame number
      */
     public void submitReady(int frameNumber) {
-        sendAppDataEmit(BuildConfig.picTakingReady, String.valueOf(frameNumber));
+        sendAppDataEmit(BuildConfig.pic_picTakingReady, String.valueOf(frameNumber));
     }
 
     /**
@@ -51,7 +51,7 @@ public class PicTakerModel extends ModelBase {
      * @param frameNumber This app's frame number, if it has one
      */
     public void submitUnRegister(int frameNumber) {
-        sendAppDataEmit(BuildConfig.unRegisterPicTaker, String.valueOf(frameNumber));
+        sendAppDataEmit(BuildConfig.pic_unRegisterPicTaker, String.valueOf(frameNumber));
     }
 
 }

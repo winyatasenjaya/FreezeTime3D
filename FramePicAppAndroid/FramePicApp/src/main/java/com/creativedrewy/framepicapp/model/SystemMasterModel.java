@@ -2,6 +2,8 @@ package com.creativedrewy.framepicapp.model;
 
 import android.app.Activity;
 
+import com.creativedrewy.framepicapp.BuildConfig;
+
 /**
  * Model functionality for the app that will act as the system master
  */
@@ -15,7 +17,7 @@ public class SystemMasterModel extends ModelBase {
         super(ipAddress, handlerActivity);
 
         _roleString = "master";
-        _registerMessage = "RegisterMaster";
+        _registerMessage = BuildConfig.master_register;
 
         initConnection();
     }
@@ -24,20 +26,20 @@ public class SystemMasterModel extends ModelBase {
      * Send the message to the server that all the PicTakers should start ordering
      */
     public void sendInitOrder() {
-        sendAppDataEmit("InitPictureTakerOrder");
+        sendAppDataEmit(BuildConfig.master_initPicTakerOrder);
     }
 
     /**
      * Send the message to the server to take all the frame pics
      */
     public void sendFreezeTime() {
-        sendAppDataEmit("StartFrameCapture");
+        sendAppDataEmit(BuildConfig.master_startFrameCapture);
     }
 
     /**
      * Send the message to the server to reset the system for additional pic taking
      */
     public void sendResetSystem() {
-        sendAppDataEmit("ResetSystem");
+        sendAppDataEmit(BuildConfig.master_resetSystem);
     }
 }
