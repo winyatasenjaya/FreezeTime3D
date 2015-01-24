@@ -1,6 +1,7 @@
 package com.creativedrewy.framepicapp.service;
 
 import android.app.Activity;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.creativedrewy.framepicapp.R;
@@ -25,7 +26,6 @@ public class ServiceBase {
     protected String _serverIP;
     protected String _roleString;   //Derived classes will need to specify a unique role string
     protected String _registerMessage;
-    protected JSONObject _serverReturnJSON = null;
 
     public String getServerIP() { return _serverIP; }
     public void setServerIP(String _serverIP) { this._serverIP = _serverIP; }
@@ -34,31 +34,28 @@ public class ServiceBase {
      * Constructor
      * @param ipAddress IP address to FT3D socket server
      */
-    public ServiceBase(String ipAddress){
+    public ServiceBase(String ipAddress) {
         _serverIP = ipAddress;
     }
 
     /**
-     * Startup the connection to the FT3D socket server
+     * Startup the connection to the FT3D socket server, providing the observable for subscription
      */
-    public Observable<String> initConnection() {
+    public Observable<Pair<String, String>> subscribeConnection() {
         SocketIORequest req = new SocketIORequest("http://" + _serverIP + ":7373");
         req.setTimeout(2500);
 
-        return Observable.create((Subscriber<? super String> subscriber) -> {
+        return Observable.create((Subscriber<? super Pair<String, String>> subscriber) -> {
             SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), req, (ex, socketIOClient) -> {
                 if (ex != null) {
-                    //_handlerActivity.runOnUiThread(() -> Toast.makeText(_handlerActivity, _handlerActivity.getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show());
-                    subscriber.onError(new Throwable("Could not connect"));
+                    subscriber.onError(new Throwable());
                 } else {
                     _globalSocketIOClient = socketIOClient;
 
                     socketIOClient.on("ServerDataEmitEvent", (jsonArray, acknowledge) -> {
-                        _serverReturnJSON = jsonArray.optJSONObject(0);
-
-                        if (_serverReturnJSON != null) {
-                            //_handlerActivity.runOnUiThread(() -> ((IServerMessageHandler) _handlerActivity).handleServerMessage(_serverReturnJSON.optString("msg"), _serverReturnJSON.optString("payload")));
-                            subscriber.onNext(_serverReturnJSON.optString("msg"));
+                        JSONObject returnJSON = jsonArray.optJSONObject(0);
+                        if (returnJSON != null) {
+                            subscriber.onNext(new Pair<>(returnJSON.optString("msg"), returnJSON.optString("payload")));
                         }
                     });
 

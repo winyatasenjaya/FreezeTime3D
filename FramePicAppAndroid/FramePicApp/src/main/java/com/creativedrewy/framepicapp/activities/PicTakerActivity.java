@@ -103,20 +103,14 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
     @OnClick(R.id.picRegisterButton)
     void startPicRegister() {
         String ipAddr = _serverAddrEditText.getText().toString();
-
-        SharedPreferences.Editor editor = _appPrefs.edit();
-        editor.putString(PicTakerService.PICTAKER_HOST_IP_PREF, ipAddr);
-        editor.commit();
+        _appPrefs.edit().putString(PicTakerService.PICTAKER_HOST_IP_PREF, ipAddr).apply();
 
         _picTakerService = new PicTakerService(ipAddr);
-        _picTakerService.initConnection()
+        _picTakerService.subscribeConnection()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(msg -> {
-                    Toast.makeText(this, "Here is your message: " + msg, Toast.LENGTH_LONG).show();
-                }, err -> {
-                    Toast.makeText(this, "You had an error: " + err.getMessage(), Toast.LENGTH_LONG).show();
-                });
+                .subscribe(pair -> handleServerMessage(pair.first, pair.second),
+                           err -> Toast.makeText(this, getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show());
 
         InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(PicTakerActivity.this.getCurrentFocus().getWindowToken(), 0);

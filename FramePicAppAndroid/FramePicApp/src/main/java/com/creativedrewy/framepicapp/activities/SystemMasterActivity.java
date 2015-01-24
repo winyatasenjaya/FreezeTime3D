@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.creativedrewy.framepicapp.BuildConfig;
 import com.creativedrewy.framepicapp.R;
@@ -19,6 +20,8 @@ import com.creativedrewy.framepicapp.service.SystemMasterService;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Activity/view for the app that will act as the FT3D master
@@ -59,12 +62,14 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
     @OnClick(R.id.masterRegisterButton)
     void onMasterRegisterClick() {
         String ipAddr = _serverAddrEditText.getText().toString();
-
-        SharedPreferences.Editor editor = _appPrefs.edit();
-        editor.putString(SystemMasterService.SYSTEM_HOST_IP_PREF, ipAddr);
-        editor.commit();
+        _appPrefs.edit().putString(SystemMasterService.SYSTEM_HOST_IP_PREF, ipAddr).commit();
 
         _masterModel = new SystemMasterService(ipAddr);
+        _masterModel.subscribeConnection()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(pair -> handleServerMessage(pair.first, pair.second),
+                           err -> Toast.makeText(this, getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show());
 
         InputMethodManager inputMethodManager = (InputMethodManager)  SystemMasterActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(SystemMasterActivity.this.getCurrentFocus().getWindowToken(), 0);
@@ -97,28 +102,22 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
     public void resetFreezeOperation() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to reset?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                _masterModel.sendResetSystem();
+        builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+            _masterModel.sendResetSystem();
 
-                _initOrderingButton.setText(getString(R.string.init_ordering_label));
-                _initOrderingButton.setEnabled(true);
+            _initOrderingButton.setText(getString(R.string.init_ordering_label));
+            _initOrderingButton.setEnabled(true);
 
-                _freezeTimeButton.setText(getString(R.string.freeze_time_button_text));
-                _freezeTimeButton.setEnabled(false);
+            _freezeTimeButton.setText(getString(R.string.freeze_time_button_text));
+            _freezeTimeButton.setEnabled(false);
 
-                _devicesOrderedLabel.setText("");
-                _devicesReadyLabel.setText("");
+            _devicesOrderedLabel.setText("");
+            _devicesReadyLabel.setText("");
 
-                _orderedDevices = 0;
-                _readyDevices = 0;
-            }
+            _orderedDevices = 0;
+            _readyDevices = 0;
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) { }
-        });
+        builder.setNegativeButton("Cancel", (dialogInterface, i) -> { });
 
         builder.show();
     }
