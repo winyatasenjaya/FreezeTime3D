@@ -22,7 +22,6 @@ import rx.Subscriber;
  */
 public class ServiceBase {
     protected SocketIOClient _globalSocketIOClient;
-    protected Activity _handlerActivity;
     protected String _serverIP;
     protected String _roleString;   //Derived classes will need to specify a unique role string
     protected String _registerMessage;
@@ -34,11 +33,9 @@ public class ServiceBase {
     /**
      * Constructor
      * @param ipAddress IP address to FT3D socket server
-     * @param handlerActivity We have to pass in an activity so that we can broker thread stuff to UI
      */
-    public ServiceBase(String ipAddress, Activity handlerActivity){
+    public ServiceBase(String ipAddress){
         _serverIP = ipAddress;
-        _handlerActivity = handlerActivity;
     }
 
     /**
@@ -51,7 +48,8 @@ public class ServiceBase {
         return Observable.create((Subscriber<? super String> subscriber) -> {
             SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), req, (ex, socketIOClient) -> {
                 if (ex != null) {
-                    _handlerActivity.runOnUiThread(() -> Toast.makeText(_handlerActivity, _handlerActivity.getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show());
+                    //_handlerActivity.runOnUiThread(() -> Toast.makeText(_handlerActivity, _handlerActivity.getString(R.string.server_connect_error_message), Toast.LENGTH_LONG).show());
+                    subscriber.onError(new Throwable("Could not connect"));
                 } else {
                     _globalSocketIOClient = socketIOClient;
 

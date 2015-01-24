@@ -64,7 +64,7 @@ public class SystemMasterActivity extends Activity implements IServerMessageHand
         editor.putString(SystemMasterService.SYSTEM_HOST_IP_PREF, ipAddr);
         editor.commit();
 
-        _masterModel = new SystemMasterService(ipAddr, SystemMasterActivity.this);
+        _masterModel = new SystemMasterService(ipAddr);
 
         InputMethodManager inputMethodManager = (InputMethodManager)  SystemMasterActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(SystemMasterActivity.this.getCurrentFocus().getWindowToken(), 0);

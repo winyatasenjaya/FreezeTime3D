@@ -13,13 +13,11 @@ public class PicTakerService extends ServiceBase {
     /**
      * Constructor
      */
-    public PicTakerService(String ipAddress, Activity handlerActivity) {
-        super(ipAddress, handlerActivity);
+    public PicTakerService(String ipAddress) {
+        super(ipAddress);
 
         _roleString = "picTaker";
         _registerMessage = BuildConfig.pic_register;
-
-        //initConnection();
     }
 
     /**

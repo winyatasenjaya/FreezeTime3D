@@ -108,12 +108,14 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
         editor.putString(PicTakerService.PICTAKER_HOST_IP_PREF, ipAddr);
         editor.commit();
 
-        _picTakerService = new PicTakerService(ipAddr, PicTakerActivity.this);
+        _picTakerService = new PicTakerService(ipAddr);
         _picTakerService.initConnection()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(msg -> {
                     Toast.makeText(this, "Here is your message: " + msg, Toast.LENGTH_LONG).show();
+                }, err -> {
+                    Toast.makeText(this, "You had an error: " + err.getMessage(), Toast.LENGTH_LONG).show();
                 });
 
         InputMethodManager inputMethodManager = (InputMethodManager)  PicTakerActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);

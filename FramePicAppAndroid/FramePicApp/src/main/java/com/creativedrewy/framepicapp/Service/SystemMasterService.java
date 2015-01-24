@@ -13,13 +13,11 @@ public class SystemMasterService extends ServiceBase {
     /**
      * Constructor
      */
-    public SystemMasterService(String ipAddress, Activity handlerActivity) {
-        super(ipAddress, handlerActivity);
+    public SystemMasterService(String ipAddress) {
+        super(ipAddress);
 
         _roleString = "master";
         _registerMessage = BuildConfig.master_register;
-
-        initConnection();
     }
 
     /**
