@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -73,6 +74,8 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
 
         _framePreviewImageView.setVisibility(View.GONE);
         _appPrefs = getPreferences(MODE_PRIVATE);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
