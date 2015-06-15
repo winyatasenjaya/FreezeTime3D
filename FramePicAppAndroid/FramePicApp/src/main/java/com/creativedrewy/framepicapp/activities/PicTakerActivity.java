@@ -141,9 +141,6 @@ public class PicTakerActivity extends Activity implements IServerMessageHandler 
             _systemCamera.setDisplayOrientation(90);
 
             Camera.Parameters params = _systemCamera.getParameters();
-            params.setPictureSize(2560, 1920);  //This is 5mp
-            params.setPictureFormat(PixelFormat.JPEG);
-            params.setJpegQuality(85);
             _systemCamera.setParameters(params);
 
             _cameraPreviewWindow = new CameraPreview(this, _systemCamera);
