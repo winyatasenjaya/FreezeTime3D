@@ -29,7 +29,7 @@ $ ->
                 when "picTakerHasOrderedFC" then updatePicTakerStatus data.payload, "Ordered: " + data.payload
                 when "picTakerIsReadyFC" then updatePicTakerStatus data.payload, data.payload + ": Ready"
                 when "picProcessingFC" then updatePicTakerStatus data.payload, data.payload + ": Processing"
-                when "picProcessingCompleteFC" then $(gridContainer.children("div").get(data.payload)).html("<img src='/thumbs_temp/frame-thumb" + data.payload + ".jpg'>")
+                when "picProcessingCompleteFC" then $(gridContainer.children("div").get(data.payload.thumb)).html("<img src='/sessions/" + data.payload.path + "/frame-thumb" + data.payload.thumb + ".jpg'>")
                 when "picTakerUnRegister" then $("div[pic-taker-ip='" + data.payload + "']").remove()
 
     ###
